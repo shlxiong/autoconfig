@@ -37,7 +37,7 @@
         <logback.version>1.1.11</logback.version>
     </properties>
     
-    <!--modules>
+    <modules>
         <module>xsl-autoconfig-base</module>
         <module>xsl-autoconfig-dal</module>
         <module>xsl-autoconfig-mvc</module>
@@ -47,7 +47,7 @@
         <module>xsl-autoconfig-rocketmq</module>
         <module>xsl-autoconfig-kafka</module>
         <module>xsl-autoconfig-trace</module>
-    </modules-->
+    </modules>
 
 	<dependencyManagement>
 	    <dependencies>
