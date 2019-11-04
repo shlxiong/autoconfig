@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.openxsl</groupId>
-    <artifactId>autoconfig</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <artifactId>autoconfig</artifactId>
+        <version>1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>xsl-autoconfig-security</artifactId>
@@ -13,13 +13,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.sumpay.framework</groupId>
+            <groupId>com.openxsl</groupId>
             <artifactId>xsl-autoconfig-base</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.sumpay.logger</groupId>
-            <artifactId>logger-rocketmq</artifactId>
         </dependency>
 		
 		<dependency>
