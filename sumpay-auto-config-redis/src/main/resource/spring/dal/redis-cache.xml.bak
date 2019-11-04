@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context	http://www.springframework.org/schema/context/spring-context.xsd"
+	   default-autowire="byName">
+
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxActive" value="${redis.pool.maxActive}" />
+        <property name="maxIdle" value="${redis.pool.maxIdle}" />
+        <property name="maxWait" value="${redis.pool.maxWait}" />
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+    </bean>
+
+    <!-- 1-shard -->
+    <bean id="shardInfo" class="redis.clients.jedis.JedisShardInfo"
+    	  p:host="${redis.host}" p:port="${redis.port}" p:password=${redis.password}
+    	  p:db="{redis.database}" p:soTimeout="${redis.timeout}" p:connectionTimeout="${redis.timeout}" />
+	<!-- 2-sentinel -->
+	<!-- <bean id="sentinelConfig"
+        class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
+        <constructor-arg>
+    		<map>
+    			<entry key="master">${redis.sentinel.master}</entry>
+    			<entry key="sentinels">${redis.sentinel.nodes}</entry>
+    		</map>
+    	</constructor-arg>
+    </bean> -->
+    <!-- 3-cluster -->
+    <bean id="redisClusterConfiguration" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+    	<constructor-arg>
+    		<map>
+    			<entry key="maxRedirects">${redis.cluster.maxRedirects}</entry>
+    			<entry key="clusterNodes">${redis.cluster.nodes}</entry>
+    		</map>
+    	</constructor-arg>
+    </bean>
+    
+    <bean id="redisConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}"
+          p:pool-config-ref="jedisPoolConfig" />
+          
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" scope="prototype">
+        <property name="connectionFactory" ref="redisConnectionFactory" />
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+        </property>
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+        </property>
+    </bean>
+
+</beans>

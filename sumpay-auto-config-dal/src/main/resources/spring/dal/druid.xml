@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    		http://www.springframework.org/schema/beans/spring-beans.xsd
+		    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+
+        <property name="initialSize" value="${jdbc.pool.minSize}" />
+        <property name="maxActive" value="${jdbc.pool.maxSize}" />
+        <property name="minIdle" value="${jdbc.pool.minSize}" />
+        <property name="maxWait" value="${jdbc.pool.waitTime}" />
+         
+        <property name="validationQuery" value="${jdbc.validationQuery}" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="testWhileIdle" value="true" />
+         
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.pool.clockTime}" />
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.pool.idleTime}" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="180" />
+        <property name="logAbandoned" value="false" />
+ 		<property name="poolPreparedStatements" value="true" />
+ 		<property name="maxPoolPreparedStatementPerConnectionSize" value="50" />
+        <property name="filters" value="mergeStat" />
+    </bean> -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+  		<property name="connectionProperties" value="${datasource.connectionProperties}" />
+	  	<property name="filters" value="config,slf4j" />
+		<property name="proxyFilters">
+		    <list>
+		        <ref bean="stat-filter" />
+		    </list>
+		</property>
+    </bean>
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="mergeSql" value="true" />  <!--merge noarg-sql，as：mergeStat filter-->
+        <property name="logSlowSql" value="true" />
+		<property name="slowSqlMillis" value="3000" />  <!--more than 3s as slowsql-->
+    </bean>
+    
+    <!-- mybatis配置 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+    	  p:dataSource-ref="dataSource" p:configLocation="classpath:spring/dal/mybatis-config.xml">
+		<property name="typeAliasesPackage" value="${mybatis.mapper.scanpackage}" />
+		<property name="mapperLocations">
+			<array>
+				<value>classpath:mybatis/**/*.xml</value>
+				<value>classpath:mapper/**/*.xml</value>
+			</array>
+		</property>
+	</bean>
+	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> -->
+	<bean class="cn.sumpay.config.config.MybatisMapperScanner">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="processPropertyPlaceHolders" value="true" />
+		<property name="basePackage" value="${mybatis.mapper.scanpackage}" />
+		<!-- <property name="annotaionClass" value="" /> -->
+	</bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 事务，基于注解 @Transactional -->
+	<bean id="transactionManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		  p:dataSource-ref="dataSource" />
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	<!-- <import resource="dao-template.xml"/> -->
+    
+ </beans>

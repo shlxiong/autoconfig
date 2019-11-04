@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"  
+       xsi:schemaLocation="http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.1.xsd  
+        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+        	http://grails.org/schema/gorm http://grails.org/schema/gorm/gorm.xsd">  
+       
+    <bean class="cn.sumpay.config.groovy.ResourceGroovyFactory">
+        <!-- <property name="directory" value="groovy"/> -->
+        <property name="locations">
+        	<list>
+        		<value>classpath:groovy</value>
+        		<value>file:/sumpay/conf/springboot-test/groovy</value>
+        	</list>
+        </property>
+    </bean>
+    
+    <bean id="genericGroovyFactory" class="cn.sumpay.config.groovy.GenericGroovyFactory" />
+    
+    <bean class="org.springframework.scripting.support.ScriptFactoryPostProcessor"/>
+    
+</beans> 

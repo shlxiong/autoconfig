@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.openxsl</groupId>
+        <artifactId>autoconfig</artifactId>
+        <version>1.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>xsl-autoconfig-mvc</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+		  	<groupId>com.openxsl</groupId>
+		  	<artifactId>xsl-autoconfig-dal</artifactId>
+		  	<version>${project.parent.version}</version>
+		</dependency>
+        
+        <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.logback-extensions</groupId>
+		    <artifactId>logback-ext-spring</artifactId>
+		</dependency>
+		
+		<dependency>
+		  	<groupId>org.hibernate</groupId>
+		  	<artifactId>hibernate-validator</artifactId>
+		  	<exclusions>
+		  		<exclusion>
+		  			<groupId>javax.validation</groupId>
+		  			<artifactId>validation-api</artifactId>
+		  		</exclusion>
+		  	</exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>2.0.1.Final</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <!-- <exclusions>
+		    	<exclusion>
+		    		<groupId>org.springframework</groupId>
+		    		<artifactId>spring-expression</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.springframework</groupId>
+		    		<artifactId>spring-beans</artifactId>
+		    	</exclusion>
+		    </exclusions> -->
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>provided</scope>
+		</dependency>
+    </dependencies>
+
+</project>

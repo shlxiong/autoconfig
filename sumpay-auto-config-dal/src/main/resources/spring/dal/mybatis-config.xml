@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<properties>
+		<property name="name1" value="value1"/>
+	</properties>
+	<settings>
+	    <setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="localCacheScope" value="SESSION"/>
+		<setting name="autoMappingBehavior" value="FULL"/>
+		<!--当检测出未知列（或未知属性）时，如何处理，默认情况下没有任何提示，这在测试的时候很不方便，不容易找到错误。
+		 NONE : 不做任何处理 (默认值)		WARNING : 警告日志形式的详细信息		FAILING : 映射失败，抛出异常和详细信息
+		-->
+		<!-- <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/> -->
+		<!-- <setting name="useStatementNamespaces" value="1"/> -->
+		<!-- <setting name="defaultFetchSize" value="100"/> -->
+		<!-- 查询响应时间 -->
+		<setting name="defaultStatementTimeout" value="25000" />
+	</settings>
+	
+	<typeAliases>
+		<!-- <package name="${mybatis.mapper.scanpackage}"/>
+		<typeAlias alias="" type=""/> -->
+	</typeAliases>
+	<typeHandlers>
+	
+	</typeHandlers>
+	<!-- <plugins>
+	    <plugin interceptor="cn.sumpay.config.dal.jdbc.paginate.MybatisPageHelper">
+	    	<property name="dialect" value="${jdbc.dialect}"/>
+	    </plugin>
+	</plugins> -->
+
+   	<mappers>
+   		<!-- <mapper resource="spring/dao/mappers/user-mapper.xml" /> -->
+   	</mappers>
+    
+</configuration>

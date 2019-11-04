@@ -1,0 +1,147 @@
+<included>
+
+    <springProperty scope="context" name="appname" source="spring.application.name" defaultValue=""/>
+    <springProperty scope="context" name="logPath" source="logging.path" defaultValue="/sumpay/logs"/>
+    <springProperty scope="context" name="logFile" source="logging.file" defaultValue="logback.log"/>
+    <springProperty scope="context" name="logLevel" source="logging.level" defaultValue="INFO"/>
+    <springProperty scope="context" name="maxHistory" source="logging.maxHistory" defaultValue="365"/>
+    <springProperty scope="context" name="logPattern" source="logging.pattern" defaultValue="%d{HH:mm:ss.SSS} [%thread] %-5level %logger.%M[%L] [%X{traceId} %X{spanId} %X{parentId}] - %msg%n"/>
+    <springProperty scope="context" name="logFile.sumpay" source="logging.file.sumpay" defaultValue="sumpay.log"/>
+    
+    <contextListener class="cn.sumpay.logger.listener.TtlMdcListener"/>
+    
+    <!-- ConsoleAppender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+    <!--appender name="KafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <encoder class="com.github.danielwegener.logback.kafka.encoding.LayoutKafkaMessageEncoder">
+            <layout class="net.logstash.logback.layout.LogstashLayout" >
+                <includeContext>true</includeContext>
+                <includeCallerData>true</includeCallerData>
+                <customFields>{"system":"test"}</customFields>
+                <fieldNames class="net.logstash.logback.fieldnames.ShortenedFieldNames"/>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+        <producerConfig>bootstrap.servers=localhost:9092</producerConfig>
+        <topic>applog</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.HostNameKeyingStrategy" />
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+    </appender-->
+    <!-- RollingFileAppender -->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${appname}/${logFile}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${appname}/${logFile}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref="RollingFile"/>
+    </appender>
+
+    <appender name="RollingFile_sumpay" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${appname}/${logFile.sumpay}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${appname}/${logFile.sumpay}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC_sumpay" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref="RollingFile_sumpay"/>
+    </appender>
+
+    <appender name="RollingFile_dubbo" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${appname}/dubbo.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${appname}/dubbo.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC_dubbo" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref="RollingFile_dubbo"/>
+    </appender>
+
+    <appender name="RollingFile_druid" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${appname}/slowsqls.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${appname}/slowsqls.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC_druid" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref="RollingFile_druid"/>
+    </appender>
+
+    <logger name="dubbo.accesslog" additivity="false" level="${logLevel}">
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC_dubbo"/>
+    </logger>
+    <logger name="com.alibaba.dubbo" additivity="false" level="WARN">
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC_dubbo"/>
+    </logger>
+    <logger name="com.alibaba.druid" additivity="false" level="WARN">  <!-- logSlowSql ERROR -->
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC_druid"/>
+    </logger>
+    <logger name="druid.sql.Statement" additivity="false" level="${logLevel}">
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC_druid"/>
+    </logger>
+    <!-- save to project.log
+    <logger name="druid.PasswordManager" additivity="false" level="${logLevel}">
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC"/>
+    </logger> -->
+    <logger name="cn.sumpay" additivity="false" level="${logLevel}">
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC_sumpay"/>
+    </logger>
+    <logger name="cn.sumpay.config" additivity="false" level="${logLevel}">
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC"/>
+    </logger>
+    
+</included>

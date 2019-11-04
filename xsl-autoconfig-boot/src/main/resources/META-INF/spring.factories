@@ -1,0 +1,2 @@
+#org.springframework.context.ApplicationContextInitializer=\
+cn.sumpay.config.tracing.registry.startup.TracingBootContextInitialzer

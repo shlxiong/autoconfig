@@ -1,0 +1,3 @@
+cn.sumpay.config.config.HttpPropertiesLoader
+cn.sumpay.config.config.ZooKeeperPropertiesLoader
+cn.sumpay.config.config.JdbcDsPropertiesLoader

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   		http://www.springframework.org/schema/beans/spring-beans.xsd
+	   		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	
+	<!-- <context:component-scan base-package="${dubbo.scan}" use-default-filters="false">
+		<context:include-filter type="annotation" expression="com.alibaba.dubbo.config.annotation.Service"/>
+		<context:include-filter type="annotation" expression="com.alibaba.dubbo.config.annotation.Reference"/>
+	</context:component-scan> -->
+	
+	<dubbo:application name="${dubbo.application.name}" owner="${dubbo.application.owner}"
+	       organization="openxsl" logger="slf4j"/>
+    <dubbo:registry address="${dubbo.registry.address}" file="${dubbo.registry.file}" />
+    <!-- <dubbo:monitor address="${dubbo.monitor.address}"/> -->
+    
+    <!-- serialization: kryo|hessian2|dubbo|fastjson|nativejava|FST -->
+    <dubbo:protocol name="dubbo" port="${dubbo.protocol.port}" server="netty" />
+    
+    <!-- 
+    <dubbo:protocol name="hessian" port="${dubbo.protocol.hessian.port}"/>
+    <dubbo:protocol name="webservice" port="${dubbo.protocol.webservice.port}"/>
+    <dubbo:protocol name="thrift" port="40880"/>
+     -->
+    <!-- default attrs: (server="jetty" iothreads="5" threads="100" keepalive="true")
+    <dubbo:protocol name="rest" threads="100" port="${dubbo.protocol.rest.port}"
+           contextpath="${dubbo.protocol.rest.contextPath}" server="servlet"/>
+    <dubbo:protocol name="http" port="${dubbo.protocol.http.port}" contextpath="http" server="servlet"/>
+    -->
+    
+    <dubbo:provider filter="${dubbo.provider.filter}" host="${dubbo.protocol.host}" timeout="${dubbo.provider.timeout:60000}"/>
+    <dubbo:consumer check="${dubbo.reference.check}" timeout="${dubbo.consumer.timeout:65000}" retries="${dubbo.consumer.retries:0}"/>
+
+    <!-- application.properties #"spring.dubbo." 
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<bean id="dubboPropsConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+	   	<property name="locations">
+	      	<list>
+	         	<value>classpath*:/META-INF/dubbo.properties</value>
+	         	<value>${dubbo.properties.file}</value>
+	      	</list>
+	    </property>
+	    <property name="ignoreResourceNotFound" value="true" />
+	    <property name="ignoreUnresolvablePlaceholders" value="true" />
+	    <property name="order" value="1" />
+	</bean>
+	-->
+	
+	<dubbo:annotation package="${dubbo.scan}" />
+	
+</beans>

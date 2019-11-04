@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans.xsd"
+	   default-autowire="byName">
+
+	<bean id="validators" class="cn.sumpay.config.dal.freemarker.validator.Validators">
+    	<property name="validators">
+    		<map>
+    			<entry key="mobile">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.MobileValidator" />
+    			</entry>
+    			<entry key="idcard">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.IdcardValidator" />
+    			</entry>
+    			<entry key="amount">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.AmountValidator" />
+    			</entry>
+    			<entry key="required">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.RequiredValidator" />
+    			</entry>
+    			<entry key="branchNo">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.BranchNoValidator" />
+    			</entry>
+    			<entry key="nullSet">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.NullSetValidator" />
+    			</entry>
+    			<entry key="regexp">
+    				<bean class="cn.sumpay.config.dal.freemarker.validator.RegexpValidator" />
+    			</entry>
+    		</map>
+    	</property>
+    </bean>
+	
+</beans>
