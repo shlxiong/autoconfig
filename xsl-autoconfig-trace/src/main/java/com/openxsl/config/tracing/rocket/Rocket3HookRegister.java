@@ -11,7 +11,7 @@ import com.openxsl.config.loader.GraceServiceLoader;
 
 public class Rocket3HookRegister {
 	private static final String HOOK_CLASS = 
-			"com.openxsl.config.tracing.filter.TraceRocket3Hook";
+			"com.openxsl.tracing.filter.TraceRocket3Hook";
 	
 	public static void registerTo(DefaultMQProducer producer) {
 		List<SendMessageHook> traceHooks = 

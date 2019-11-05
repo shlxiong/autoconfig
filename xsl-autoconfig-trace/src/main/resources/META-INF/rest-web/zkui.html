@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Elastic Job Lite Console</title>
+
+<link href="js/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" media="screen">
+<link href="js/ztree/css/demo.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="js/user/tree.js"></script>
+
+<style type="text/css">
+  label{
+	width: 80px;
+	display:inline-block;
+	text-align: right;
+  }
+  #Tree li{
+	line-height: 14px;
+  } 
+  #showview li{
+	width: 400px;
+  }
+</style>
+
+   </head>
+   <body class="overflow">
+   
+	<div class="content_wrap" style="width: 100%;">
+		<!-- <div class="content_wrap_title" style="width: 100%">
+				<span style="width: 400px">zk ui 树管理 （${SESSION_KEY}）  </span>
+		</div> --> 
+		<div class="zTreeDemoBackground left" style="position:relative; left:20px; width:370px; margin-left:20px">
+		    <div style="margin: 5px">
+		       PATH: <input id="add_search">
+		       <button onclick="search();">搜索</button>&nbsp;
+		    </div>
+		    <!-- <div style="margin: 5px">
+		       MODE:
+		       <select id="flag">
+		          <option value="0">PERSISTENT</option>
+		          <option value="1">EPHEMERAL</option>
+		          <option value="2">PERSISTENT_SEQUENTIAL</option>
+		          <option value="3">EPHEMERAL_SEQUENTIAL</option>
+		       </select>
+		    </div>
+		    <div style="margin: 5px">
+		       DATA:
+		       <textarea style="width:200px; height:50px" id="add_data"></textarea>
+		    </div>
+		    <div style="margin: 5px">
+		       <button onclick="search();">搜索</button>&nbsp;
+		       <button onclick="add();">添加节点</button>
+		    </div> -->
+			<ul id="zkTree" class="ztree" style="width:350px;">
+			   
+			</ul>
+		</div>
+		<div id="showview" style="position:relative; left:10px; margin-right:10px; float: left; margin-top:0px" class="right">
+			<ul>
+				<li class="content_wrap_title">
+				   <div class="content_wrap_title" style="text-align: left">
+				   <span style="width:70px">当前节点:</span>
+				   <span id="path"></span>
+				   <!-- (<a href="javascript:void(0)" onclick="deletePath();">删除节点</a>) -->
+				   </div>
+				</li>
+				<li>
+				  <!--  (<a href="javascript:void(0)" onclick="update();">更新节点数据</a>) -->
+				   <textarea style="width:630px; height:220px; line-height:20px;" id="data"></textarea>
+				</li>
+				<li style="line-height:28px">
+				   STATE: 
+				   <div style="margin-left: 15px">
+				      <span> czxid = <span id="czxid"></span>，  </span>
+				      <span> mzxid = <span id="mzxid"></span>，  </span>
+				      <span> pzxid = <span id="pzxid"></span>  </span> <br>
+				      <span> ctime = <span id="ctime"></span>  </span> <br>
+				      <span> mtime = <span id="mtime"></span>  </span> <br>
+				      <span> version = <span id="version"></span>，  </span>
+				      <span> cversion = <span id="cversion"></span>，  </span>
+				      <span> aversion = <span id="aversion"></span>  </span> <br>
+				      <span> ephemeralOwner = <span id="ephemeralOwner"></span>  </span> <br>
+				      <span> dataLength = <span id="dataLength"></span>  </span> <br>
+				      <span> numChildren = <span id="numChildren"></span>  </span> <br>
+				   </div>
+				</li>
+			</ul>
+		</div>
+	</div>

@@ -13,30 +13,41 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.openxsl</groupId>
-            <artifactId>xsl-autoconfig-base</artifactId>
+			<groupId>com.openxsl</groupId>
+            <artifactId>xsl-autoconfig-dal</artifactId>
             <version>${project.parent.version}</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>com.alibaba</groupId>
-            		<artifactId>druid</artifactId>
-            	</exclusion>
-            </exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.openxsl</groupId>
+            <artifactId>xsl-autoconfig-redis</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.openxsl</groupId>
+            <artifactId>xsl-autoconfig-rocketmq</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.alibaba</groupId>
+		    <artifactId>dubbo-rpc-api</artifactId>
+		    <version>${dubbo.version}</version>
+		    <scope>provided</scope>
+		</dependency>
+	    <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
         </dependency>
         
-        <!-- <dependency>    
-	      	<groupId>org.springframework.data</groupId>
-	      	<artifactId>spring-data-redis</artifactId>
-	      	<version>${spring-data-redis}</version>
-	    </dependency>
         <dependency>
-	      	<groupId>redis.clients</groupId>
-	      	<artifactId>jedis</artifactId>
-	    </dependency>
-	    <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency> -->
+		  	<groupId>org.springframework.boot</groupId>
+		  	<artifactId>spring-boot</artifactId>
+    		<version>1.5.13.RELEASE</version>
+		  	<scope>provided</scope>
+		</dependency>
+        
         
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -71,6 +82,31 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+		  	<groupId>org.eclipse.jetty</groupId>
+		  	<artifactId>jetty-server</artifactId>
+		  	<version>9.4.6.v20170531</version>
+		  	<scope>provided</scope>
+		</dependency>
+		<dependency>
+		  	<groupId>org.eclipse.jetty</groupId>
+		  	<artifactId>jetty-servlet</artifactId>
+		  	<version>9.4.6.v20170531</version>
+		  	<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-jaxrs</artifactId>
+		    <version>3.1.4.Final</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>1.19</version>
             <scope>provided</scope>
         </dependency>
         

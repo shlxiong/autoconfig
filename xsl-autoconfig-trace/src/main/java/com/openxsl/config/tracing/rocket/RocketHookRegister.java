@@ -9,9 +9,14 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
 
 import com.openxsl.config.loader.GraceServiceLoader;
 
+/**
+ * RocketMQ MessageHook注册类
+ * 
+ * @author xiongsl
+ */
 public class RocketHookRegister {
 	private static final String HOOK_CLASS = 
-			"com.openxsl.config.tracing.filter.TraceRocketHook";
+			"com.openxsl.tracing.filter.TraceRocketHook";
 	
 	public static void registerTo(DefaultMQProducer producer) {
 		List<SendMessageHook> traceHooks = 

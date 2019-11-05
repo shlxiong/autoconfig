@@ -1,0 +1,5 @@
+org.springframework.context.ApplicationListener=\
+com.openxsl.tracing.registry.startup.TracingRegistryBootListener
+
+org.springframework.boot.SpringApplicationRunListener=\
+com.openxsl.tracing.registry.startup.TracingSpringBootRunListener

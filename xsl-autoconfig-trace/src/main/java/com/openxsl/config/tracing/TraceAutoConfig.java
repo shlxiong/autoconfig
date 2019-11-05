@@ -7,8 +7,8 @@ import org.springframework.util.ClassUtils;
 import java.util.*;
 
 /**
- * @author heyc
- * @date ${DATA} 17:06
+ * 根据classpath装载 trace-api中的类
+ * @author xiongsl
  */
 public class TraceAutoConfig implements ImportSelector {
 
@@ -16,14 +16,14 @@ public class TraceAutoConfig implements ImportSelector {
      * 自动配置类
      */
     private static String[] TRACE_AUTO_CONFIGS = {
-    		"com.openxsl.config.tracing.repo.RedisBeanPostProcessor",
-    		"com.openxsl.config.tracing.repo.MongoBeanPostProcessor",
-            "com.openxsl.config.tracing.filter.MvcLoggingConfiguration",
-            "com.openxsl.config.tracing.http.HttpClientBeanPostProcessor",
-            "com.openxsl.config.tracing.quartz.SpringSchdBeanPostProcessor",
-            "com.openxsl.config.tracing.quartz.ElasticJobBeanPostProcessor",
-            "com.openxsl.config.tracing.thread.ThreadMethodBeanPostProcessor",
-            "com.openxsl.config.tracing.thread.SingleThreadSchedulingConfigurer"
+    		"com.openxsl.tracing.repo.RedisBeanPostProcessor",
+    		"com.openxsl.tracing.repo.MongoBeanPostProcessor",
+            "com.openxsl.tracing.filter.MvcLoggingConfiguration",
+            "com.openxsl.tracing.http.HttpClientBeanPostProcessor",
+            "com.openxsl.tracing.quartz.SpringSchdBeanPostProcessor",
+            "com.openxsl.tracing.quartz.ElasticJobBeanPostProcessor",
+            "com.openxsl.tracing.thread.ThreadMethodBeanPostProcessor",
+            "com.openxsl.tracing.thread.SingleThreadSchedulingConfigurer"
     };
 
     @Override
