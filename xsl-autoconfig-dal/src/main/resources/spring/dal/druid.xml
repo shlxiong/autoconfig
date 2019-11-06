@@ -60,7 +60,7 @@
 		</property>
 	</bean>
 	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> -->
-	<bean class="cn.sumpay.config.config.MybatisMapperScanner">
+	<bean class="com.openxsl.config.config.MybatisMapperScanner">
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 		<property name="processPropertyPlaceHolders" value="true" />
 		<property name="basePackage" value="${mybatis.mapper.scanpackage}" />

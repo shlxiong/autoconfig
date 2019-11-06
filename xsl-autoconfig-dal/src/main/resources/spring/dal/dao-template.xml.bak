@@ -42,16 +42,16 @@
 	    
 	</bean>-->
 	
-	<bean id="mysqlLimiter" class="cn.sumpay.commons.dal.jdbc.paginate.MysqlPageLimiter" />
-	<bean id="oracleLimiter" class="cn.sumpay.commons.dal.jdbc.paginate.OraclePageLimiter" />
+	<bean id="mysqlLimiter" class="com.openxsl.commons.dal.jdbc.paginate.MysqlPageLimiter" />
+	<bean id="oracleLimiter" class="com.openxsl.commons.dal.jdbc.paginate.OraclePageLimiter" />
     
     <!-- spring-jdbc -->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:data-source-ref="dataSource"/>
-	<bean id="springTemplate" class="cn.sumpay.commons.dal.jdbc.impl.JdbcTemplateImpl" scope="prototype"
+	<bean id="springTemplate" class="com.openxsl.commons.dal.jdbc.impl.JdbcTemplateImpl" scope="prototype"
 	      p:dialect="${jdbc.dialect}" />
 	
 	<!-- mybatis: sqlSession @druid.xml -->
-	<bean id="mybatisTemplate" class="cn.sumpay.commons.dal.jdbc.impl.MybatisDaoImpl" scope="prototype"
+	<bean id="mybatisTemplate" class="com.openxsl.commons.dal.jdbc.impl.MybatisDaoImpl" scope="prototype"
 		  p:dialect="${jdbc.dialect}" />
  		  
 	<!-- orm-hibernate 

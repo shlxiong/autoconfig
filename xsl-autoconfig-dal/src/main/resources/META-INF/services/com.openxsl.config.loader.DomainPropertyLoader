@@ -1,0 +1,3 @@
+com.openxsl.config.config.HttpPropertiesLoader
+com.openxsl.config.config.ZooKeeperPropertiesLoader
+com.openxsl.config.config.JdbcDsPropertiesLoader

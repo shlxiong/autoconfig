@@ -29,7 +29,7 @@
 	
 	</typeHandlers>
 	<!-- <plugins>
-	    <plugin interceptor="cn.sumpay.config.dal.jdbc.paginate.MybatisPageHelper">
+	    <plugin interceptor="com.openxsl.config.dal.jdbc.paginate.MybatisPageHelper">
 	    	<property name="dialect" value="${jdbc.dialect}"/>
 	    </plugin>
 	</plugins> -->

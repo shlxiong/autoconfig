@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationContextInitializer=\
-cn.sumpay.config.EnvironmentInitializer
+com.openxsl.config.EnvironmentInitializer

@@ -6,40 +6,40 @@
 						 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
 	   default-autowire="byName">
 
-    <!-- <bean id="mailProps" class="cn.sumpay.config.loader.PrefixProperties"
+    <!-- <bean id="mailProps" class="com.openxsl.config.loader.PrefixProperties"
     	  p:prefix="mail" p:config-location="classpath:commons-dal.properties"/>
-    <bean id="mailSender" class="cn.sumpay.config.dal.MailSender">
+    <bean id="mailSender" class="com.openxsl.config.dal.MailSender">
     	<constructor-arg index="0" ref="mailProps" />
     </bean>
     
-    <bean id="ftpProps" class="cn.sumpay.config.loader.PrefixProperties"
+    <bean id="ftpProps" class="com.openxsl.config.loader.PrefixProperties"
     	  p:prefix="ftp" p:config-location="classpath:commons-dal.properties"/>
-    <bean id="ftpClient" class="cn.sumpay.config.dal.FtpClientInvoker">
+    <bean id="ftpClient" class="com.openxsl.config.dal.FtpClientInvoker">
     	<constructor-arg index="0" ref="ftpProps" />
     </bean> -->
     
-    <bean id="mailSender" class="cn.sumpay.config.dal.MailSender" />
-    <bean id="ftpClient" class="cn.sumpay.config.dal.FtpClientInvoker" />
+    <bean id="mailSender" class="com.openxsl.config.dal.MailSender" />
+    <bean id="ftpClient" class="com.openxsl.config.dal.FtpClientInvoker" />
 
     <!-- 邮件队列，处理90%的请求 -->
-    <bean id="mailListener" class="cn.sumpay.config.queue.impl.MemQueueListener"
+    <bean id="mailListener" class="com.openxsl.config.queue.impl.MemQueueListener"
 		  p:consumers="${mail.consumer.size}" p:queue-ref="mailQueue" p:retry-ref="nonRetry" />
 	<bean id="mailQueue" p:name="mailQueue" p:size="${mail.queue.size}" p:fair="false"
 		  p:service-ref="mailExecutor"
-	      class="cn.sumpay.config.queue.impl.MemQueue" />
-	<bean id="mailFailListener" class="cn.sumpay.config.queue.impl.MemQueueListener"
+	      class="com.openxsl.config.queue.impl.MemQueue" />
+	<bean id="mailFailListener" class="com.openxsl.config.queue.impl.MemQueueListener"
 		  p:consumers="${mail.consumer.fails}" p:queue-ref="mailFailQueue" p:retry-ref="mailRetry"/>
 	<bean id="mailFailQueue" p:name="mailFailQueue" p:size="${mail.queue.size}" p:fair="false"
 	      p:service-ref="mailExecutor"
-	      class="cn.sumpay.config.queue.impl.MemQueue" />
-	<!-- <bean id="mailExecutor" class="cn.sumpay.notify.service.mail.MailExecutor" /> -->
+	      class="com.openxsl.config.queue.impl.MemQueue" />
+	<!-- <bean id="mailExecutor" class="com.openxsl.notify.service.mail.MailExecutor" /> -->
 	
-	<bean id="nonRetry" class="cn.sumpay.config.retry.RetryStrategy">
+	<bean id="nonRetry" class="com.openxsl.config.retry.RetryStrategy">
 		<constructor-arg name="retries" value="1" />
 		<constructor-arg name="interval" value="0" />
 		<constructor-arg name="increament" value="0" />
 	</bean>
-	<bean id="mailRetry" class="cn.sumpay.config.retry.RetryStrategy">  <!-- 4,6,10min -->
+	<bean id="mailRetry" class="com.openxsl.config.retry.RetryStrategy">  <!-- 4,6,10min -->
 		<constructor-arg name="retries" value="4" />
 		<constructor-arg name="interval" value="120000" />
 		<constructor-arg name="increament" value="120000" />

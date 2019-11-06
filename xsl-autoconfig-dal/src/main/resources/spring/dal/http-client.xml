@@ -4,7 +4,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans.xsd"
 	   default-autowire="byName">
 
-	<bean id="schemeRegistry" class="cn.sumpay.config.dal.RestInvoker.SchemeRegistryBuilder" factory-method="build" />
+	<bean id="schemeRegistry" class="com.openxsl.config.dal.RestInvoker.SchemeRegistryBuilder" factory-method="build" />
     <bean id="httpClientConnManager" class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" destroy-method="close">
     	<constructor-arg ref="schemeRegistry" />
     	<property name="maxTotal" value="${http.connect.total}" />
@@ -17,9 +17,9 @@
 	</bean>
 	<bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
 	<!-- 在没有httpClientConnManager的情况下分别设置： SSLContext、SSLHostnameVerifier、maxConnTotal、maxConnPerRoute
-	<bean id="sslContextBuilder" class="cn.sumpay.config.dal.RestInvoker.InnerSSLContextBuilder" />
+	<bean id="sslContextBuilder" class="com.openxsl.config.dal.RestInvoker.InnerSSLContextBuilder" />
 	<bean id="sslContext" factory-bean="sslContextBuilder" factory-method="build" /> -->
-	<bean id="skipAllVerifier" class="cn.sumpay.config.dal.RestInvoker.InnerHostnameVerifier" /> 
+	<bean id="skipAllVerifier" class="com.openxsl.config.dal.RestInvoker.InnerHostnameVerifier" /> 
 	
 	<bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
 		<property name="connectionManager" ref="httpClientConnManager" />
@@ -79,8 +79,8 @@
     </bean>
     
     <!-- maybe add interceptor for restTemplate -->
-    <bean class="cn.sumpay.config.dal.RestInvoker" />
-    <bean class="cn.sumpay.config.dal.HttpClientInvoker">
+    <bean class="com.openxsl.config.dal.RestInvoker" />
+    <bean class="com.openxsl.config.dal.HttpClientInvoker">
     	<constructor-arg name="builder" ref="httpClientBuilder" />
     </bean>
     
