@@ -15,7 +15,7 @@ import com.openxsl.config.util.Version;
  * 基于Classpath中是否存在某个类或接口
  * @author xiongsl
  */
-public class OnAbsentClassCondition implements Condition {
+public class OnAbsentCondition implements Condition {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
@@ -45,6 +45,14 @@ public class OnAbsentClassCondition implements Condition {
 				if (context.getBeanFactory().containsBean(bean)) {
 					logger.info("ignore {} on-bean-absent [{}]",
 							classOrMethodName, bean);
+					return false;
+				}
+			}
+			String[] properties = (String[])attributeMap.get("properties");
+			for (String property : properties) {
+				if (Environment.hasProperty(property)) {
+					logger.info("ignore {} on-property-absent [{}]",
+								classOrMethodName, property);
 					return false;
 				}
 			}

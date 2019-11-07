@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Conditional;
  * 
  * @author xiongsl
  */
-@Conditional(OnAbsentClassCondition.class)
+@Conditional(OnAbsentCondition.class)
 public @interface ConditionalOnAbsent {
 	
 	/**
@@ -24,5 +24,11 @@ public @interface ConditionalOnAbsent {
 	 * 是否存在某些spring-bean
 	 */
 	String[] beans() default {};
+	
+	/**
+	 * 是否存在某些属性
+	 * @return
+	 */
+	String[] properties() default {};
 
 }

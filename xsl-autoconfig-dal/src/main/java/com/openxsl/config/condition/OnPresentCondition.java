@@ -15,7 +15,7 @@ import com.openxsl.config.util.Version;
  * 基于Classpath中是否存在某个类或接口
  * @author xiongsl
  */
-public class OnPresentClassCondition implements Condition {
+public class OnPresentCondition implements Condition {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
@@ -44,7 +44,15 @@ public class OnPresentClassCondition implements Condition {
 			for (String bean : beans) {
 				if (!context.getBeanFactory().containsBean(bean)) {
 					logger.info("ignore {} on-bean-present [{}]",
-							classOrMethodName, bean);
+								classOrMethodName, bean);
+					return false;
+				}
+			}
+			String[] properties = (String[])attributeMap.get("properties");
+			for (String property : properties) {
+				if (!Environment.hasProperty(property)) {
+					logger.info("ignore {} on-property-present [{}]",
+								classOrMethodName, property);
 					return false;
 				}
 			}
