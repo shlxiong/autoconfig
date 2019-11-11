@@ -1,12 +1,12 @@
 <included>
 
     <springProperty scope="context" name="appname" source="spring.application.name" defaultValue=""/>
-    <springProperty scope="context" name="logPath" source="logging.path" defaultValue="/sumpay/logs"/>
+    <springProperty scope="context" name="logPath" source="logging.path" defaultValue="/openxsl/logs"/>
     <springProperty scope="context" name="logFile" source="logging.file" defaultValue="logback.log"/>
     <springProperty scope="context" name="logLevel" source="logging.level" defaultValue="INFO"/>
     <springProperty scope="context" name="maxHistory" source="logging.maxHistory" defaultValue="365"/>
     <springProperty scope="context" name="logPattern" source="logging.pattern" defaultValue="%d{HH:mm:ss.SSS} [%thread] %-5level %logger.%M[%L] [%X{traceId} %X{spanId} %X{parentId}] - %msg%n"/>
-    <springProperty scope="context" name="logFile.sumpay" source="logging.file.sumpay" defaultValue="sumpay.log"/>
+    <springProperty scope="context" name="logFile.openxsl" source="logging.file.openxsl" defaultValue="openxsl.log"/>
     
     <contextListener class="cn.sumpay.logger.listener.TtlMdcListener"/>
     
@@ -49,21 +49,21 @@
         <appender-ref ref="RollingFile"/>
     </appender>
 
-    <appender name="RollingFile_sumpay" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logPath}/${appname}/${logFile.sumpay}</file>
+    <appender name="RollingFile_openxsl" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${appname}/${logFile.openxsl}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logPath}/${appname}/${logFile.sumpay}.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${logPath}/${appname}/${logFile.openxsl}.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>${logPattern}</pattern>
         </encoder>
     </appender>
-    <appender name="ASYNC_sumpay" class="ch.qos.logback.classic.AsyncAppender">
+    <appender name="ASYNC_openxsl" class="ch.qos.logback.classic.AsyncAppender">
         <includeCallerData>true</includeCallerData>
         <discardingThreshold>0</discardingThreshold>
         <queueSize>512</queueSize>
-        <appender-ref ref="RollingFile_sumpay"/>
+        <appender-ref ref="RollingFile_openxsl"/>
     </appender>
 
     <appender name="RollingFile_dubbo" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -131,13 +131,13 @@
         </springProfile>
         <appender-ref ref="ASYNC"/>
     </logger> -->
-    <logger name="cn.sumpay" additivity="false" level="${logLevel}">
+    <logger name="com.openxsl" additivity="false" level="${logLevel}">
         <springProfile name="dev">
             <appender-ref ref="CONSOLE"/>
         </springProfile>
-        <appender-ref ref="ASYNC_sumpay"/>
+        <appender-ref ref="ASYNC_openxsl"/>
     </logger>
-    <logger name="cn.sumpay.config" additivity="false" level="${logLevel}">
+    <logger name="com.openxsl.config" additivity="false" level="${logLevel}">
         <springProfile name="dev">
             <appender-ref ref="CONSOLE"/>
         </springProfile>
