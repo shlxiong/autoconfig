@@ -16,7 +16,7 @@
 	
 	<properties>
 		<hibernate.version>4.3.9.Final</hibernate.version>
-		<zookeeper.version>3.4.9</zookeeper.version>
+		<zookeeper.version>3.4.14</zookeeper.version>
 		<zkclient_version>0.10</zkclient_version>
         <curator_version>2.12.0</curator_version>
 	</properties>
