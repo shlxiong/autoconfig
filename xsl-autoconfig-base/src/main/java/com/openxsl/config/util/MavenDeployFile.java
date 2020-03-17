@@ -12,7 +12,7 @@ public class MavenDeployFile {
 	static String DEPLOY_CMD = "mvn -e deploy:deploy-file \"-DgroupId=%s\" \"-DartifactId=%s\""
 			+ " \"-Dversion=%s\" \"-Dpackaging=jar\" \"-Dfile=%s\""
 			+ " \"-Durl=http://192.168.8.240:8081/nexus/content/repositories/%s/\""
-			+ " \"-DrepositoryId=Sumpay-%s\"";
+			+ " \"-DrepositoryId=Openxsl-%s\"";
 	
 	public static void main(String[] args) throws Exception {
 		String sources = "E:\\m2\\repository\\com\\openxsl\\framework\\openxsl-autoconfig-base\\1.2";

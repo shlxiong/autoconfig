@@ -29,7 +29,7 @@ import org.springframework.util.ClassUtils;
  */
 public final class BeanUtils extends org.springframework.beans.BeanUtils{
 	private static final ClassLoader CLASS_LOADER = ClassUtils.getDefaultClassLoader();
-	private static final Logger logger = LoggerFactory.getLogger(StringUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 	
 	public static ClassLoader getClassLoader() {
 		return CLASS_LOADER;

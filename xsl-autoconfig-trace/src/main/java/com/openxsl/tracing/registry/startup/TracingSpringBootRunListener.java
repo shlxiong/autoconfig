@@ -42,7 +42,7 @@ public class TracingSpringBootRunListener implements SpringApplicationRunListene
 //	@Override  1.5.x的方法
 	public void finished(ConfigurableApplicationContext context, Throwable exception) {
 		if (Environment.existSpringBoot() &&
-				!Environment.exists("com.openxsl.config.boot.SumpayApplication")) {
+				!Environment.exists("com.openxsl.config.boot.OpenxslApplication")) {
 			try {
 				while (TraceContext.getRpcId().split("\\.").length >= 2){
 					TraceContext.popStack();

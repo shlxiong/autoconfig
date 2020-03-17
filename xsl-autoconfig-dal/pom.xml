@@ -12,7 +12,7 @@
 	<name>xsl-autoconfig-dal</name>
 	<artifactId>xsl-autoconfig-dal</artifactId>
 	<version>${project.parent.version}</version>
-	<description>sumpay common classes</description>
+	<description>autoconfig common classes</description>
 	
 	<properties>
 		<hibernate.version>4.3.9.Final</hibernate.version>

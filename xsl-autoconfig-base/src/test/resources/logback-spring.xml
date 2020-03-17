@@ -2,7 +2,7 @@
 <configuration scan="false" scanPeriod="30 seconds">
     <!-- 环境变量 -->
 	<springProperty scope="context" name="appname" source="spring.application.name" defaultValue=""/>
-	<springProperty scope="context" name="logPath" source="logging.path" defaultValue="/sumpay/logs"/>
+	<springProperty scope="context" name="logPath" source="logging.path" defaultValue="/openxsl/logs"/>
     <springProperty scope="context" name="logFile" source="logging.file" defaultValue="logback.log"/>
     <springProperty scope="context" name="logLevel" source="logging.level" defaultValue="INFO"/>
     <springProperty scope="context" name="maxHistory" source="logging.maxHistory" defaultValue="365"/>
@@ -50,7 +50,7 @@
     </appender>
     
     <!-- dev环境输出到控制台  -->
-    <logger name="cn.sumpay" additivity="false" level="info">
+    <logger name="com.openxsl" additivity="false" level="info">
         <springProfile name="dev">
         	<appender-ref ref="CONSOLE"/>
         </springProfile>

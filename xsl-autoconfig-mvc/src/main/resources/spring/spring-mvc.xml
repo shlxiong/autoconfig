@@ -65,7 +65,7 @@
         <!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
-    <bean id="messageSource" class="com.openxsl.config.webmvc.SumpayBundleMessageSource">
+    <bean id="messageSource" class="com.openxsl.config.webmvc.OpenxslBundleMessageSource">
     <!--  class="org.springframework.context.support.ReloadableResourceBundleMessageSource" -->
         <property name="basenames">
             <list>

@@ -7,9 +7,9 @@
            http://www.springframework.org/schema/context 
            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     
-    <context:component-scan base-package="cn.sumpay.config.rocketmq" />
+    <context:component-scan base-package="com.openxsl.config.rocketmq" />
     
-    <bean class="cn.sumpay.config.rocketmq.test.EchoMessageListener" />
-    <bean class="cn.sumpay.config.rocketmq.test.EchoExtMessageListener" />
+    <bean class="com.openxsl.config.rocketmq.test.EchoMessageListener" />
+    <bean class="com.openxsl.config.rocketmq.test.EchoExtMessageListener" />
     
 </beans>

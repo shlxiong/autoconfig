@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 集合类操作，包括数组
+ * 
+ * @author xiongsl
+ */
 @SuppressWarnings("unchecked")
 public class CollectionUtils {
 	
@@ -147,6 +152,45 @@ public class CollectionUtils {
 		T[] array = (T[])Array.newInstance(entityClass, size);
 		list.toArray(array);
 		return array;
+	}
+	
+	/**
+	 * 将可变参数转为元素数组
+	 */
+	public static <T> T[] extractArgs(Class<T> clazz, T... args) {
+		T[] examples = (T[])Array.newInstance(clazz, 0);
+		if (args == null) {
+			return examples;
+		}
+		List<T> sources = new ArrayList<T>(4);
+		if (args.length == 1) {
+			Object values = args[0];
+			if (values.getClass().isArray()) {
+				for (T elt : (T[])values) {
+					sources.add(elt);
+				}
+			} else {
+				sources.add(args[0]);
+			}
+		} else {  //0 or more than 1
+			for (T elt : args) {
+				sources.add(elt);
+			}
+		}
+		
+		return sources.toArray(examples);
+	}
+	
+	public static String outAsString(Object[] array) {
+		if (array == null) {
+			return "null";
+		} 
+		StringBuilder buffer = new StringBuilder("[");
+		for (Object elt : array) {
+			buffer.append(elt).append(", ");
+		}
+		return buffer.length() < 2 ? buffer.append(']').toString()
+					: buffer.toString().replaceAll(", $", "]");
 	}
 
 }

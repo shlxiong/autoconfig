@@ -14,7 +14,7 @@ import com.openxsl.config.loader.OtherPropertiesLoader;
  * ResourceBundle(去除前缀)
  * @author xiongsl
  */
-public class SumpayBundleMessageSource extends ReloadableResourceBundleMessageSource {
+public class OpenxslBundleMessageSource extends ReloadableResourceBundleMessageSource {
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 	
 	@Override

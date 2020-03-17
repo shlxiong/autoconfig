@@ -1,6 +1,8 @@
 package com.openxsl.config.dal.freemarker;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,9 +11,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -19,6 +24,7 @@ import com.openxsl.config.dal.freemarker.validator.Validators;
 import com.openxsl.config.util.common.XmlUtils;
 import com.openxsl.config.util.MapUtils;
 import com.openxsl.config.util.StringUtils;
+
 import freemarker.core.InvalidReferenceException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -33,11 +39,48 @@ import freemarker.template.TemplateException;
 public class TemplateTransfer {
 	private final static String DETAILS = "details";
 	private final static String LIST_PATH = "/List/";
+	private final static Pattern PATTERN = Pattern.compile("^Expression (.*) is undefined");
+	
+	private static Configuration CFG = new Configuration(Configuration.getVersion());
+	private static Logger logger = LoggerFactory.getLogger(TemplateTransfer.class);
 	
 	private Map<String, Template> paramTemplates = new HashMap<String, Template>();
 	private Map<String, ResultTemplate> resultTemplates = new HashMap<String, ResultTemplate>();
-	@Resource
+	@javax.annotation.Resource
 	private Validators validators;
+	
+	static {
+		DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+		CFG.setDefaultEncoding("UTF-8");
+		try {
+			File dir = resourceLoader.getResource("classpath:templates").getFile();
+			CFG.setDirectoryForTemplateLoading(dir);
+			Resource resource = resourceLoader.getResource("freemarker.properties");
+			CFG.setSettings(PropertiesLoaderUtils.loadProperties(resource));
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+	}
+	
+	public static String parseTemplate(String content, Map<String,?> params) {
+		try {
+			Configuration cfg = new Configuration(Configuration.getVersion());
+			Template template = new Template("template", new StringReader(content), cfg);
+			return getTemplateContent(template, params);
+		} catch (IOException ioe) {
+			throw new IllegalArgumentException("Template instantiate error: ", ioe);
+		}
+	}
+	
+	public static String getTemplateFile(String templFile, Map<String,?> params) {
+		try {
+			Template template = CFG.getTemplate(templFile);
+			template.setNumberFormat("0.##");
+			return getTemplateContent(template, params);
+		} catch (IOException ioe) {
+			throw new IllegalArgumentException("TemplateNotFoundException: "+templFile);
+		}
+	}
 	
 	/**
 	 * 参数模板
@@ -48,15 +91,14 @@ public class TemplateTransfer {
 			return;
 		}
 		if (!paramTemplates.containsKey(serviceKey)) {
-			@SuppressWarnings("deprecation")
-			Configuration cfg = new Configuration();
+			Configuration cfg = new Configuration(Configuration.getVersion());
 			cfg.setDefaultEncoding("UTF-8");
 		 	cfg.setTemplateLoader(loader);
 			loader.putTemplate(serviceKey, template);
 			try {
 				paramTemplates.put(serviceKey, cfg.getTemplate(serviceKey));
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("", e);
 			}
 		}
 	}
@@ -68,29 +110,14 @@ public class TemplateTransfer {
 		}
 	}
 
-	private Pattern variantPattern = Pattern.compile("^Expression (.*) is undefined");
+	
 	public String getTemplateText(String serviceKey, Map<String,?> map) {
-		try {
-			Template template = paramTemplates.get(serviceKey);
-			template.setNumberFormat("0.##");
-			if (validators != null){
-				this.validateParameters(serviceKey, map);
-			}
-			return FreeMarkerTemplateUtils.processTemplateIntoString(template, map);
-		} catch(InvalidReferenceException ire){
-			String message = (ire.getCause()==null) ? ire.getMessage()
-					: ire.getCause().getMessage();
-			Matcher matcher = variantPattern.matcher(message);
-			if (matcher.find()){
-				throw new IllegalArgumentException("转换模板出错，缺少参数："+matcher.group(1), ire);
-			}else{
-				throw new IllegalArgumentException("转换模板出错，可能参数没对应", ire);
-			}
-		}catch (TemplateException e) {
-			throw new IllegalArgumentException("转换模板出错，可能参数没对应", e);
-		} catch (IOException e) {
-			throw new IllegalArgumentException(e);
+		Template template = paramTemplates.get(serviceKey);
+		template.setNumberFormat("0.##");
+		if (validators != null){
+			this.validateParameters(serviceKey, map);
 		}
+		return getTemplateContent(template, map);
 	}
 	@SuppressWarnings("unchecked")
 	public List<String> getTemplateParameters(String serviceKey){
@@ -116,6 +143,24 @@ public class TemplateTransfer {
 		List<String> exceptions = validators.validate(paramExprs, argsMap);
 		if (exceptions.size() > 0){
 			throw new IllegalArgumentException("参数校验错误：\n"+exceptions);
+		}
+	}
+	private static String getTemplateContent(Template template, Map<String,?> params) {
+		try {
+			return FreeMarkerTemplateUtils.processTemplateIntoString(template, params);
+		} catch(InvalidReferenceException ire){
+			String message = (ire.getCause()==null) ? ire.getMessage()
+					: ire.getCause().getMessage();
+			Matcher matcher = PATTERN.matcher(message);
+			if (matcher.find()){
+				throw new IllegalArgumentException("转换模板出错，缺少参数："+matcher.group(1), ire);
+			}else{
+				throw new IllegalArgumentException("转换模板出错，可能参数没对应", ire);
+			}
+		}catch (TemplateException e) {
+			throw new IllegalArgumentException("转换模板出错，可能参数没对应", e);
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 	

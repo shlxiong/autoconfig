@@ -18,7 +18,7 @@ public class TracingRegistryBootListener implements ApplicationListener<ContextR
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		if (Environment.existSpringBoot() &&
-				!Environment.exists("com.openxsl.config.boot.SumpayApplication")) {
+				!Environment.exists("com.openxsl.config.boot.OpenxslApplication")) {
 			ComponentsRegistryService.register(event.getApplicationContext());
 		}
 	}

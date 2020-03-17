@@ -14,7 +14,7 @@ import com.openxsl.config.testuse.AutoConfig;
 import com.openxsl.config.testuse.BasicTest;
 
 @ContextConfiguration(locations="classpath:spring/dal/http-client.xml")
-@TestPropertySource(properties={"spring.autoconfig=false","spring.component.scanpackage=cn.sumpay.config.dal"})
+@TestPropertySource(properties={"spring.autoconfig=false","spring.component.scanpackage=com.openxsl.config.dal"})
 @AutoConfig(application="springboot-test")
 public class ZookeeperTest extends BasicTest{
 	@Autowired
@@ -27,8 +27,8 @@ public class ZookeeperTest extends BasicTest{
 		
 		RestURL url = new RestURL();
 		url.setApplication("SMS");
-		url.setDomain("manager.sumpay.cn");
-		url.setContextPath("/sumpay-sms");
+		url.setDomain("manager.openxsl.com");
+		url.setContextPath("/notify-sms");
 		url.setInstanceId("192.168.16.44:8080");
 		url.setRestUri("/sms/send.do");
 		System.out.println(url.toURL());

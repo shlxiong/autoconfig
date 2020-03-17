@@ -26,7 +26,7 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
 	@Override //AnnotationConfigApplicationContext
 	public void initialize(ConfigurableApplicationContext applicationContext) {
 		if (Environment.existSpringBoot() &&
-				!Environment.exists("com.openxsl.config.boot.SumpayApplication")) {
+				!Environment.exists("com.openxsl.config.boot.OpenxslApplication")) {
 			ConfigurableEnvironment environ	= applicationContext.getEnvironment();
 			Environment.getSpringEnvironment().merge(environ);
 			
