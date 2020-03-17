@@ -16,7 +16,7 @@ import com.openxsl.config.BootstrapApplication;
 import com.openxsl.config.Environment;
 import com.openxsl.config.autodetect.AutoConfigRegistryPostProcessor;
 import com.openxsl.config.loader.DomainPropertyLoadSpi;
-import com.openxsl.config.tracing.registry.service.ComponentsRegistryService;
+import com.openxsl.tracing.registry.service.ComponentsRegistryService;
 import com.openxsl.config.util.SpringRegistry;
 
 /**
