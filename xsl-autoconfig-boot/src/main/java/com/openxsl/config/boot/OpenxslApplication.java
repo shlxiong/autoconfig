@@ -21,14 +21,13 @@ import com.openxsl.config.util.SpringRegistry;
 
 /**
  * Spring-boot启动类：
- * 		增加"cn.sumpay.config"扫描包
+ * 		增加"com.openxsl.config"扫描包
  *  	接管配置文件和日志管理
  * @author xiongsl
  */
 public class OpenxslApplication extends SpringApplication{
 	
 	public static ConfigurableApplicationContext run(Object sources, String[] args) {
-		//sources.add  SumpayApplication.class.getPackage();  @Component
 		return new OpenxslApplication(sources).run(args);
 	}
 	public static ConfigurableApplicationContext run(Object[] sources, String[] args) {

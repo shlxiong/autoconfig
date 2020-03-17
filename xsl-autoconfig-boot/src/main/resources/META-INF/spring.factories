@@ -1,2 +1,2 @@
 #org.springframework.context.ApplicationContextInitializer=\
-cn.sumpay.config.tracing.registry.startup.TracingBootContextInitialzer
+cn.openxsl.config.tracing.registry.startup.TracingBootContextInitialzer

@@ -60,11 +60,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	    <!-- <dependency>
-			<groupId>cn.sumpay.logger</groupId>
-			<artifactId>spring-boot-starter-logger</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency> -->
 	        
 		<dependency>
 			<groupId>javax.servlet</groupId>
