@@ -1,4 +1,4 @@
-package com.openxsl.config.dal.jdbc;
+package com.openxsl.config.rpcmodel;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
