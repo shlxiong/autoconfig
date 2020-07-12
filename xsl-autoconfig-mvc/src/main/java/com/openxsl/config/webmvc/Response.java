@@ -22,8 +22,8 @@ public class Response implements Serializable {
 	/** 返回结果 */
 	private Object data;
 	
-	public static final Response SUCCESS = new Response("操作成功");
-	public static final Response FAILURE = new Response("-1", "操作失败");
+	public static final Response SUCCESS = new ImmutableResponse("操作成功");
+	public static final Response FAILURE = new ImmutableResponse("-1", "操作失败");
 	
 	public Response() {}
 	public Response(String message) {
@@ -86,5 +86,20 @@ public class Response implements Serializable {
 	public void setData(Object data) {
 		this.data = data;
 	}
+	
+	static class ImmutableResponse extends Response{
+		public ImmutableResponse(String message) {
+			this.setMessage(message);
+		}
+		public ImmutableResponse(String code, String message) {
+			this.setCode(code);
+			this.setMessage(message);
+		}
+
+		public void setData(Object data) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	
 }

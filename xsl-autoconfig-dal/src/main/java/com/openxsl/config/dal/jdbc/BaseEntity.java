@@ -1,5 +1,8 @@
 package com.openxsl.config.dal.jdbc;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -64,7 +67,12 @@ public abstract class BaseEntity<PK extends Serializable> extends Entity<PK> {
     			} else if (ftype == java.sql.Date.class) {
     				jdbcType = "DATE";
     			}
-    			buffer.append("    `").append(name).append("` ").append(jdbcType).append(",\n");
+    			buffer.append("    `").append(name).append("` ").append(jdbcType);
+    			if (field.isAnnotationPresent(ApiModelProperty.class)) {
+    				String comment = field.getAnnotation(ApiModelProperty.class).value();
+    				buffer.append(" COMMENT '").append(comment+"'");
+    			}
+    			buffer.append(",\n");
     			
     			if (field.isAnnotationPresent(Index.class)) {
     				indexes.add(new TableIndex(field.getAnnotation(Index.class),name));
@@ -74,7 +82,12 @@ public abstract class BaseEntity<PK extends Serializable> extends Entity<PK> {
     	buffer.append("    `create_by` VARCHAR(16), create_time DATETIME,\n")
     			.append("    `modify_by` VARCHAR(16), modify_time DATETIME,\n")
     			.append("    `deleted` char(1) default 'F',");
-    	buffer.append(" PRIMARY KEY (`id`) \n) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n");
+    	buffer.append(" PRIMARY KEY (`id`) \n) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+    	if (clazz.isAnnotationPresent(ApiModel.class)) {
+    		String comment = clazz.getAnnotation(ApiModel.class).value();
+    		buffer.append(" COMMENT='").append(comment+"'");
+    	}
+    	buffer.append(";\n");
     	
     	if (clazz.isAnnotationPresent(Index.class)) {
     		indexes.add(new TableIndex(clazz.getAnnotation(Index.class)));

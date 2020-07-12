@@ -53,14 +53,9 @@ public class StatisDateUtils {
 		return new String[] {beginDate, endDate};
 	}
 	
-	public static String[] getLastYears10() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-		Calendar calendar = Calendar.getInstance();
-		String endDate = sdf.format(calendar.getTime());
-		calendar.add(Calendar.YEAR, -9);
-		calendar.set(Calendar.MONTH, 0);
-		String beginDate = sdf.format(calendar.getTime());
-		return new String[] {beginDate, endDate};
+	public static int[] getLastYears10() {
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		return new int[] {year-9, year};
 	}
 	/**
 	 * 去年同期的起止时间

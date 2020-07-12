@@ -63,32 +63,45 @@ public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
 	public void sum(StatisGroupMap other, String attribute) {
 		Number v1 = (Number)this.get(attribute);
 		Number v2 = (Number)other.get(attribute);
-		if (v1 == null) {
-			v1 = 0;
+		if (v2 != null) {
+			if (v1 == null) {
+				this.put(attribute, v2);
+			} else {
+				if (v1 instanceof Long || v1 instanceof Integer) {
+					v1 = v1.longValue() + v2.longValue();
+				} else {
+					v1 = v1.doubleValue() + v2.doubleValue();
+				}
+				this.put(attribute, v1);
+			}
 		}
-		if (v1 instanceof Long || v1 instanceof Integer) {
-			v1 = v1.longValue() + v2.longValue();
-		} else {
-			v1 = v1.doubleValue() + v2.doubleValue();
-		}
-		this.put(attribute, v1);
 	}
+	/**
+	 * 求某一个group的属性值不为null的记录数（groupBy方法中遍历）
+	 * @param attribute
+	 */
 	public void count(StatisGroupMap other, String attribute) {
 		Number v1 = (Number)this.get(attribute);
+		Number v2 = (Number)other.get(attribute);
+		if (v2 != null) {
+			if (v1 == null) {
+				this.put(attribute, 1);
+			} else {
+				this.put(attribute, v1.intValue() + 1);
+			}
+		}
+	}
+	/**
+	 * 求某一个group的总记录数（groupBy方法中遍历）
+	 * @param attribute
+	 */
+	public void count2(String attribute) {
+		Number v1 = (Number)this.get(attribute);
 		if (v1 == null) {
-			this.put(attribute, 1);
+			this.put(attribute, 2);
 		} else {
 			this.put(attribute, v1.intValue()+1);
 		}
-	}
-	public void increase(String attribute) {
-		Number v1 = (Number)this.get(attribute);
-		if (v1 == null) {
-			v1 = 2;
-		} else {
-			v1 = v1.intValue() + 1;
-		}
-		this.put(attribute, v1);
 	}
 	
 	public String getId() {
