@@ -21,9 +21,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.openxsl.config.dal.freemarker.validator.Validators;
-import com.openxsl.config.util.common.XmlUtils;
 import com.openxsl.config.util.MapUtils;
 import com.openxsl.config.util.StringUtils;
+import com.openxsl.config.util.common.XmlUtils;
 
 import freemarker.core.InvalidReferenceException;
 import freemarker.template.Configuration;

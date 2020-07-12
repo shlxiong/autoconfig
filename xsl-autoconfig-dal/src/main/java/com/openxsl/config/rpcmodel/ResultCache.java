@@ -36,6 +36,7 @@ public class ResultCache {
 	public ResultCache(){
 		instance = this;
 		GrouppedThreadFactory.newThread("CacheResult-Cleaner", true, new Runnable(){
+			@Override
 			public void run(){
 				while (true){
 					try {

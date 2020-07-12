@@ -35,22 +35,20 @@ public class TtlMDCAdapter implements MDCAdapter {
         return lastOp;
     }
 
-    private static boolean wasLastOpReadOrNull(Integer lastOp) {
+    private static boolean isLastOpReadOrNull(Integer lastOp) {
         return lastOp == null || lastOp == READ_OPERATION;
     }
 
     private Map<String, String> duplicateAndInsertNewMap(Map<String, String> oldMap) {
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
+        Map<String, String> copyMap = Collections.synchronizedMap(new HashMap<String, String>());
         if (oldMap != null) {
-            // we don't want the parent thread modifying oldMap while we are
-            // iterating over it
             synchronized (oldMap) {
-                newMap.putAll(oldMap);
+            	copyMap.putAll(oldMap);
             }
         }
 
-        copyOnInheritThreadLocal.set(newMap);
-        return newMap;
+        copyOnInheritThreadLocal.set(copyMap);
+        return copyMap;
     }
 
     /**
@@ -73,7 +71,7 @@ public class TtlMDCAdapter implements MDCAdapter {
         Map<String, String> oldMap = copyOnInheritThreadLocal.get();
         Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
-        if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
+        if (isLastOpReadOrNull(lastOp) || oldMap == null) {
             Map<String, String> newMap = duplicateAndInsertNewMap(oldMap);
             newMap.put(key, val);
         } else {
@@ -96,7 +94,7 @@ public class TtlMDCAdapter implements MDCAdapter {
         }
 
         Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
-        if (wasLastOpReadOrNull(lastOp)) {
+        if (isLastOpReadOrNull(lastOp)) {
             Map<String, String> newMap = duplicateAndInsertNewMap(oldMap);
             newMap.remove(key);
         } else {
@@ -164,7 +162,5 @@ public class TtlMDCAdapter implements MDCAdapter {
 
         // the newMap replaces the old one for serialisation's sake
         copyOnInheritThreadLocal.set(newMap);
-
-
     }
 }

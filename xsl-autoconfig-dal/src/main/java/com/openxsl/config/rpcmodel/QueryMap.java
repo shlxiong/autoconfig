@@ -47,6 +47,7 @@ public class QueryMap<V> extends LinkedHashMap<String, V> {
 			}
 		}
 		
+		@Override
 		public String toString(){
 			return new StringBuilder(field).append(" ").append(sort).toString();
 		}

@@ -7,13 +7,12 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.alibaba.fastjson.JSON;
-
-//import com.alibaba.dubbo.common.utils.ReflectUtils;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class MapUtils {
@@ -106,6 +105,51 @@ public class MapUtils {
 	}
 	
 	/**
+	 * 去掉占位符，注意，如果存在一些没有值的占位符，将会导致死循环
+	 * @param properties
+	 */
+	public static void resolvePlaceHolders(Properties properties) {
+		Properties atomicProps = new Properties();
+		Set<String> names = new HashSet<String>();
+		for (String name : properties.stringPropertyNames()) {
+			String value = properties.getProperty(name);
+			int start = value.indexOf("${");
+			if (start!=-1 && value.indexOf("}",start+1)!=-1) {  // ${....}
+				names.add(name);
+			} else {
+				atomicProps.setProperty(name, value);
+			}
+		}
+		Properties systemProps = System.getProperties();
+		for (String name : names) {
+			String value = properties.getProperty(name);
+			int start = value.indexOf("${");
+			int end = value.indexOf('}', start+1);
+			while (end >= start) {
+				String key = value.substring(start+2, end);
+				if (atomicProps.containsKey(key)) {
+					value = value.replace(value.substring(start, end+1), atomicProps.getProperty(key));
+				} else if (systemProps.containsKey(key)){
+					value = value.replace(value.substring(start, end+1), systemProps.getProperty(key));
+				} else {
+					break;
+				}
+				start = value.indexOf("${");
+				if (start < 0) {
+					atomicProps.setProperty(name, value);
+					break;
+				} else {
+					end = value.indexOf('}', start+1);
+				}
+			}
+			properties.setProperty(name, value);
+		}
+		if (atomicProps.size() < properties.size()) {
+			resolvePlaceHolders(properties);
+		}
+	}
+	
+	/**
 	 * 将Map扁平化处理。即将多层次的Map对象，转换为只有一层的结构，key的层级间隔符为"/"
 	 */
 	public static Map<String,?> flattenMap(Map<String,Object> map, String path){
@@ -159,18 +203,24 @@ public class MapUtils {
 	 * @param key
 	 * @param value
 	 */
+	@Deprecated  //JDK-8已经有这个方法
 	public static <T> void putIfAbsent(Map<String,T> map, String key, T value) {
 		if (!map.containsKey(key) && value!=null) {
 			map.put(key, value);
 		}
 	}
 	//@see Hashtable#putIfAbsent
+	@Deprecated  //JDK-8已经有这个方法
 	public static <T> void putIfAbsent(Properties props, String key, String value) {
 		if (!props.containsKey(key) && value!=null) {
 			props.setProperty(key, value);
 		}
 	}
 	
+	/**
+	 * 将字符串转换为Map对象
+	 * @param mapStr 注意 key和value均不能有空格
+	 */
 	public static Map<String,String> fromString(String mapStr) {
 		Map<String,String> map = new HashMap<String,String>();
 		StringTokenizer tokens = new StringTokenizer(mapStr, "=, {}");

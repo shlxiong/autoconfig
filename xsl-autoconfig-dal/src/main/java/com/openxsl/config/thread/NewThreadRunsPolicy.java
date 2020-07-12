@@ -12,7 +12,8 @@ import com.openxsl.config.thread.GrouppedThreadFactory.MyThread;
  */
 public class NewThreadRunsPolicy implements RejectedExecutionHandler {
 	
-    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+    @Override
+	public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
         try {
             final Thread t = new MyThread(r, "Temporary task executor");
             t.start();

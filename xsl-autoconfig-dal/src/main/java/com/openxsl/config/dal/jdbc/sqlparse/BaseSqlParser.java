@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.openxsl.config.dal.jdbc.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap;
 
 /**
  * SQL语句注意要点：

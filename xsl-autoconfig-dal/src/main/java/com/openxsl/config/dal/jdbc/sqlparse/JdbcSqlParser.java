@@ -24,7 +24,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.openxsl.config.dal.jdbc.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap;
 
 /**
  * spring JdbcTemplate
@@ -240,6 +240,7 @@ public class JdbcSqlParser extends BaseSqlParser{
 		};
 	}
 	
+	@Override
 	protected String field2Expr(final String fieldOper){
 		String[] parts = super.extractExpr(fieldOper);
 		String operator = parts[1];

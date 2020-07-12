@@ -9,7 +9,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.openxsl.config.testuse.AutoConfig;
 import com.openxsl.config.testuse.BasicTest;
-
 import com.openxsl.config.thread.GrouppedThreadFactory;
 
 @AutoConfig(application="springboot-test")

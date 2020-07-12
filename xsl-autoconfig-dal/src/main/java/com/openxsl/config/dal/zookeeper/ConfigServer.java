@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-import com.openxsl.config.util.BeanUtils;
 import com.openxsl.config.util.CollectionUtils;
 import com.openxsl.config.util.StringUtils;
 
@@ -89,9 +88,9 @@ public class ConfigServer {
 	public <T> T getPropertyBean(String subPath, Class<T> clazz) {
 		Properties props = configurer.getRemoteProperties(subPath);
 		Properties localProps = configurer.getLocalProperties();
-		T bean = BeanUtils.instantiate(clazz);
+		T bean = org.springframework.beans.BeanUtils.instantiate(clazz);
 		Field field;
-		for (PropertyDescriptor desc : BeanUtils.getPropertyDescriptors(clazz)) {
+		for (PropertyDescriptor desc : org.springframework.beans.BeanUtils.getPropertyDescriptors(clazz)) {
 			String value, name = desc.getName();
 			try {
 				field = clazz.getDeclaredField(name);

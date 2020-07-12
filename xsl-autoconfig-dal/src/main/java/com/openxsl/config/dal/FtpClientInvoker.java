@@ -31,7 +31,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
-
 import com.openxsl.config.autodetect.PrefixProps;
 import com.openxsl.config.autodetect.PrefixPropsRegistrar;
 import com.openxsl.config.util.StringUtils;
@@ -100,9 +99,8 @@ public class FtpClientInvoker {
 		try {
 			String path = this.canonicalPath(directory);
             sftp.cd(path);
-            File file = new File(saveFile);
-            sftp.get(fileName, new FileOutputStream(file));
-            logger.debug("download {} success", file.getName());
+            sftp.get(fileName, new FileOutputStream(saveFile));
+            logger.debug("download {} success", saveFile);
             sftp.cd(rootPath);
         }catch(SftpException ex){
 			throw new IOException("下载文件失败", ex);
@@ -122,7 +120,7 @@ public class FtpClientInvoker {
 	}
 	
 	/**
-	 * 上传文件
+	 * 上传文件，两个文件夹对拷
 	 * @param localPath  本地文件夹
 	 * @param remotePath  FTP服务器的目录
 	 * @throws IOException
@@ -155,6 +153,13 @@ public class FtpClientInvoker {
         }
 	}
 	
+	/**
+	 * 将字符写入ftp服务器上，如果指定的文件存在，则先备份再写入。
+	 * @param directory  目录
+	 * @param fileName   目标文件名
+	 * @param bakFileName 备份
+	 * @param content    文件内容
+	 */
 	public void write(String directory, String fileName, String bakFileName,
 					String content) throws IOException{
 		connect();
@@ -178,10 +183,33 @@ public class FtpClientInvoker {
 	public List<FileInfo> listFiles(String directory, String...fileExt)throws IOException{
 		connect();
 		
+		String path = this.canonicalPath(directory);
 		try{
-			String path = this.canonicalPath(directory);
             sftp.cd(path);
-            Vector<LsEntry> list = sftp.ls(path);
+		} catch(SftpException ex){
+			logger.error("目录不存在: {}", directory);
+			return new ArrayList<FileInfo>(0);
+		}
+		
+		try {
+            Vector<LsEntry> list = new Vector<LsEntry>();//sftp.ls(path);
+            LsEntrySelector selector = new LsEntrySelector() {
+				@Override
+				public int select(LsEntry entry) {
+					if (fileExt.length < 1) {
+						list.add(entry);
+					} else {
+						for (String ext : fileExt) {
+							if (entry.getFilename().endsWith(ext)) {
+								list.add(entry);
+								break;
+							}
+						}
+					}
+					return LsEntrySelector.CONTINUE;
+				}
+            };
+            sftp.ls(path, selector);
             Collections.sort(list, new Comparator<LsEntry>(){
 				@Override
 				public int compare(LsEntry entry1, LsEntry entry2) { //降序
@@ -189,13 +217,6 @@ public class FtpClientInvoker {
 				}
 			});
             
-            String extName = null;
-            if (fileExt.length > 0){
-            	extName = fileExt[0];
-            	if (extName.charAt(0) != '.') {
-            		extName = "." + extName;
-            	}
-            }
             List<FileInfo> lstFiles = new ArrayList<FileInfo>(list.size());
             String fileName;
             SimpleDateFormat sdfrmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -204,17 +225,15 @@ public class FtpClientInvoker {
             	if (fileName.charAt(0) == '.') {
             		continue;  // .和..
             	}
-            	if (extName==null || fileName.endsWith(extName)){
-            		SftpATTRS attrs = entry.getAttrs();
-	            	FileInfo file = new FileInfo(fileName, attrs.isDir());
-	            	file.setSize(attrs.getSize());
-	            	file.setPermission(entry.getAttrs().getPermissionsString());
-	            	file.setCreateDate(
-	            			sdfrmt.format(new Date(attrs.getATime()*1000L)) );
-	            	file.setLastModified(
-	            			sdfrmt.format(new Date(attrs.getMTime()*1000L)) );
-	            	lstFiles.add(file);
-            	}
+        		SftpATTRS attrs = entry.getAttrs();
+            	FileInfo file = new FileInfo(fileName, attrs.isDir());
+            	file.setSize(attrs.getSize());
+            	file.setPermission(entry.getAttrs().getPermissionsString());
+            	file.setCreateDate(
+            			sdfrmt.format(new Date(attrs.getATime()*1000L)) );
+            	file.setLastModified(
+            			sdfrmt.format(new Date(attrs.getMTime()*1000L)) );
+            	lstFiles.add(file);
             }
             list.clear();
             sftp.cd(rootPath);
@@ -351,9 +370,7 @@ public class FtpClientInvoker {
 				}
 		    };
 			sftp.ls(path, selector);
-			
-			int index = result.size() - 1;
-			return index>=0 && (result.get(index).getFilename().equals(fileName));
+			return result.size() > 0;
 		}catch(SftpException ex){
 			throw new IOException("exists失败", ex);
 		}

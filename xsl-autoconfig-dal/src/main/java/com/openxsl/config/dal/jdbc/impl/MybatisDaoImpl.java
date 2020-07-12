@@ -14,12 +14,12 @@ import org.springframework.context.annotation.Scope;
 
 import com.openxsl.config.autodetect.ScanConfig;
 import com.openxsl.config.condition.ConditionalProperty;
-import com.openxsl.config.dal.jdbc.QueryMap;
-import com.openxsl.config.dal.jdbc.QueryMap.Orderby;
 import com.openxsl.config.dal.jdbc.sqlparse.BaseSqlParser;
 import com.openxsl.config.dal.jdbc.sqlparse.MybatisSqlParser;
 import com.openxsl.config.dal.jdbc.sqlparse.SqlParser;
 import com.openxsl.config.rpcmodel.Page;
+import com.openxsl.config.rpcmodel.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap.Orderby;
 
 /**
  * 因Mybatis限制，方法中的变长参数只能传一个Model或Map，sql都是namedSql

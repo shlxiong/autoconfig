@@ -42,7 +42,7 @@
         <module>xsl-autoconfig-dal</module>
         <module>xsl-autoconfig-mvc</module>
         <module>xsl-autoconfig-security</module>
-        <module>xsl-autoconfig-dubbo</module>
+        <!--module>xsl-autoconfig-dubbo</module-->
         <module>xsl-autoconfig-redis</module>
         <module>xsl-autoconfig-rocketmq</module>
         <module>xsl-autoconfig-kafka</module>

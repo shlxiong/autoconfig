@@ -8,7 +8,6 @@ import org.springframework.test.context.TestPropertySource;
 import com.openxsl.config.dal.RestInvoker;
 import com.openxsl.config.testuse.AutoConfig;
 import com.openxsl.config.testuse.BasicTest;
-
 import com.openxsl.config.util.KvPair;
 
 @ContextConfiguration(locations="classpath:spring/dal/http-client.xml")

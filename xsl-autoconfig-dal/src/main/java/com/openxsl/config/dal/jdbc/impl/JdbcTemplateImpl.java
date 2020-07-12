@@ -25,11 +25,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import com.openxsl.config.autodetect.ScanConfig;
 import com.openxsl.config.condition.ConditionalProperty;
 import com.openxsl.config.dal.jdbc.BatchDaoTemplate;
-import com.openxsl.config.dal.jdbc.QueryMap;
-import com.openxsl.config.dal.jdbc.QueryMap.Orderby;
 import com.openxsl.config.dal.jdbc.sqlparse.BaseSqlParser;
 import com.openxsl.config.dal.jdbc.sqlparse.JdbcSqlParser;
 import com.openxsl.config.rpcmodel.Page;
+import com.openxsl.config.rpcmodel.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap.Orderby;
 import com.openxsl.config.util.Patterns;
 
 /**
@@ -64,6 +64,7 @@ public class JdbcTemplateImpl<T> extends BasePagedDaoImpl<T>
 			//e.printStackTrace();
 		}
 	}
+	@Override
 	public void setGenericParameterType(Class<T> entityClass){
 		parser = new JdbcSqlParser(entityClass);
 		rowMapper = (RowMapper<T>)parser.getRowMapper(); 

@@ -2,7 +2,7 @@ package com.openxsl.config.retry.task;
 
 import java.util.List;
 
-import com.openxsl.config.dal.jdbc.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap;
 
 /**
  * 任务上下文

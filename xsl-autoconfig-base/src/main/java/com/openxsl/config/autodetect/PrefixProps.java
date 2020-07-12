@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface PrefixProps {
 	
+	String name() default "";
+	
 	String prefix() default "";
 	
 	String location() default "";

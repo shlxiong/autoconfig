@@ -29,7 +29,6 @@ import org.apache.zookeeper.data.Stat;
 import org.springframework.context.annotation.Scope;
 
 import com.alibaba.fastjson.JSON;
-
 import com.openxsl.config.autodetect.ScanConfig;
 import com.openxsl.config.condition.ConditionalProperty;
 import com.openxsl.config.dal.zookeeper.LeaderExecuteAction;
@@ -278,7 +277,8 @@ public class CuratorTemplate extends AbstractZKTemplate {
 	@Override
 	protected void registerConnectState() {
 		client.getConnectionStateListenable().addListener(new ConnectionStateListener() {
-            public void stateChanged(CuratorFramework client, ConnectionState state) {
+            @Override
+			public void stateChanged(CuratorFramework client, ConnectionState state) {
                 if (state == ConnectionState.LOST) {
                 	CuratorTemplate.this.onStateChanged(0);
                 } else if (state == ConnectionState.CONNECTED) {

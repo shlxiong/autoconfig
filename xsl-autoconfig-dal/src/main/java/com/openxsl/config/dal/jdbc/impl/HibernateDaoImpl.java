@@ -6,10 +6,10 @@ import java.util.Map;
 
 import com.openxsl.config.autodetect.ScanConfig;
 import com.openxsl.config.condition.ConditionalProperty;
-import com.openxsl.config.dal.jdbc.QueryMap;
-import com.openxsl.config.dal.jdbc.QueryMap.Orderby;
 import com.openxsl.config.dal.jdbc.sqlparse.BaseSqlParser;
 import com.openxsl.config.rpcmodel.Page;
+import com.openxsl.config.rpcmodel.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap.Orderby;
 
 /**
  * Hibernate实现

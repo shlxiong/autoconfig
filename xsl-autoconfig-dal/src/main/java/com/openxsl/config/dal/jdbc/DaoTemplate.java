@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.openxsl.config.dal.jdbc.QueryMap.Orderby;
 import com.openxsl.config.dal.jdbc.sqlparse.BaseSqlParser;
+import com.openxsl.config.rpcmodel.QueryMap;
+import com.openxsl.config.rpcmodel.QueryMap.Orderby;
 
 public interface DaoTemplate<T> {
 	

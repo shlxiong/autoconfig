@@ -96,11 +96,13 @@ public class MemQueue implements TaskQueue, InitializingBean {
         	  : new PriorityBlockingQueue<Object>(size+1);
     }
     
-    public void setFair(boolean fair) {
+    @Override
+	public void setFair(boolean fair) {
     	this.fair = fair;
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
     	return new StringBuilder("MemQueue@").append(this.hashCode())
     			.append("{name:").append(name)
     			.append(", size:").append(size).append(", service:")

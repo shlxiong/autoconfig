@@ -1,8 +1,8 @@
 package com.openxsl.config.autodetect;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,13 +35,15 @@ public class PrefixPropsRegistrar implements ImportBeanDefinitionRegistrar {
 					continue;
 				}
 				PrefixProps annotation = field.getAnnotation(PrefixProps.class);
-				List<String> locations = new ArrayList<String>(importLocations);
-				if (annotation.location().length() > 10) {  //length(".properties")
-					locations.add(annotation.location());
-				}
-				if (registry.containsBeanDefinition(field.getName())) {
+				String beanName = String.format("%s.%s", sourceClass.getName(), field.getName());
+				beanName = "".equals(annotation.name()) ? beanName : annotation.name();
+				if (registry.containsBeanDefinition(beanName)) {
 					continue;
 				}
+				List<String> locations = new ArrayList<String>(importLocations);
+				if (annotation.location().length() > 0){
+					locations.add(annotation.location());
+				} 
 				
 				BeanDefinitionBuilder beanBuilder = BeanDefinitionBuilder.rootBeanDefinition(PrefixProperties.class);
 				String prefix = annotation.prefix();
@@ -53,7 +55,7 @@ public class PrefixPropsRegistrar implements ImportBeanDefinitionRegistrar {
 				beanBuilder.addPropertyValue("regexp", annotation.regexp());
 				beanBuilder.addPropertyValue("configLocations", locations);
 				beanBuilder.addPropertyValue("rewriteKeys", annotation.rewrite());
-				registry.registerBeanDefinition(field.getName(), beanBuilder.getBeanDefinition());
+				registry.registerBeanDefinition(beanName, beanBuilder.getBeanDefinition());
 			}
 		} catch(ClassNotFoundException cnfe) {
 			//
@@ -63,16 +65,13 @@ public class PrefixPropsRegistrar implements ImportBeanDefinitionRegistrar {
 
 	private List<String> getImportPropertySourceLocation(AnnotationMetadata classMetadata) {
 		List<String> locations = new ArrayList<String>(2);
-		locations.add(Environment.getConfigPath()+"application.properties");
-		String location = null;
+		locations.add(Environment.getConfigPath() + "/application.properties");
 		Map<String,Object> propertySourceAttrs = classMetadata
 							.getAnnotationAttributes(PropertySource.class.getName());
 		if (propertySourceAttrs != null) {
-			location = (String)Array.get(propertySourceAttrs.get("value"),0);
-			if (locations.indexOf(location) == -1) {
-				locations.add(location);
-			}
-		}
+			String[] sources = (String[])propertySourceAttrs.get("value");
+			locations.addAll(Arrays.asList(sources));
+		} 
 		return locations;
 	}
 

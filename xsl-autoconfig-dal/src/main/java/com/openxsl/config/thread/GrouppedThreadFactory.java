@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.ttl.TtlRunnable;
 import com.alibaba.ttl.threadpool.TtlExecutors;
-
 import com.openxsl.config.filter.domain.Invoker;
 import com.openxsl.config.filter.tracing.TraceContext;
 import com.openxsl.config.filter.tracing.TracingCollector;
@@ -268,6 +267,7 @@ public class GrouppedThreadFactory implements ThreadFactory {
 		@Override
 		public void setUncaughtExceptionHandler(final UncaughtExceptionHandler handler) {
 			super.setUncaughtExceptionHandler( new UncaughtExceptionHandler() {
+				@Override
 				public void uncaughtException(Thread t, Throwable exp) {
 					logger.error("Catch unkown-exception: ", exp);
 					handler.uncaughtException(t, exp);

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.openxsl.config.rpcmodel.QueryMap;
 import com.openxsl.config.util.KvPair;
 
 /**

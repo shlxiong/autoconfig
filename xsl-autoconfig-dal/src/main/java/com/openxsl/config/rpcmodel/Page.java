@@ -1,10 +1,7 @@
 package com.openxsl.config.rpcmodel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -14,89 +11,77 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @param <T>
  */
 @SuppressWarnings("serial")
-public class Page<T> implements Serializable{
-	private int pageNo;         //当前页码
-	private int pageSize;       //分页大小
-	private int total;          //总记录数
-	private int start;          //当前页开始位置
-	private int pages;          //总页数
+public class Page<T> extends Pagination{
 	@JSONField(name="rows")     //bootstrap-table结果名
-	private List<T> results;    //数据
+	private List<T> data;       //数据
 	
-	public Page(){}
+	public Page(){
+		super();
+	}
 	public Page(int pageNo, int pageSize, int total) {
-		setPageSize(pageSize);
-		setPageNo(pageNo);
-		setTotal(total);
+		super(pageNo, pageSize);
+		this.setTotal(total);
+	}
+	public Page(Pagination pagination, int totalNum) {
+		this(pagination.getPageNo(), pagination.getPageSize(), totalNum);
 	}
 	
 	public Page(int pageNo, int pageSize, List<T> allData) {
-		Assert.notNull(allData, "结果为空");
-		setPageSize(pageSize);
-		setPageNo(pageNo);
-		setTotal(allData.size());
-		setResults(allData);
+		this(pageNo, pageSize, allData==null?0:allData.size());
+		this.setData(allData);
 	}
 	
-	public void add(T data){
-		if (results == null){
-			results = new ArrayList<T>(pageSize);
+	/**
+	 * 通过Pagination和List构造，用于BaseService.queryForPage()
+	 * @param pagination 分页对象
+	 * @param data 分页过后的数据
+	 */
+	public Page(Pagination pagination, List<T> data) {
+		this(pagination.getPageNo(), pagination.getPageSize(), data);
+		this.setTotal(pagination.getTotal());
+	}
+	
+//	public void add(T data){
+//		if (results == null){
+//			results = new ArrayList<T>(pageSize);
+//		}
+//		results.add(data);
+//	}
+	
+	public int getStart(int... pageNo) {
+		int pn = pageNo.length>0 ? pageNo[0] : this.getPageNo();
+		return pn * this.getPageSize();
+	}
+	
+	public int getEnd(int... pageNo) {
+		int pn = pageNo.length>0 ? pageNo[0] : this.getPageNo();
+		return Math.min(this.getTotal(), (pn+1) * this.getPageSize());
+	}
+	
+	public boolean hasNextPage() {
+		return this.getPageNo() < this.getPages()-1;
+	}
+	public boolean hasPrevPage() {
+		return this.getPageNo() > 0;
+	}
+	
+	public List<T> getPageData(){
+		if (data == null) {
+			return Collections.emptyList();
 		}
-		results.add(data);
+		return (this.getTotal() > data.size()) ? data
+				: data.subList(this.getStart(), this.getEnd());
 	}
-
-	public int getStart() {
-		return start;
-	}
-	public int getEnd() {
-		int end = start + pageSize;
-		return Math.min(end, total) - 1;
-	}
-
-	public int getPageSize() {
-		return pageSize;
+	//bootstrap-table结果名
+	public List<T> getRows() {
+		return getPageData();
 	}
 	
-	public int getPageNo() {
-		return pageNo;
+	public List<T> getData() {
+		return data;
 	}
-	
-	public int getPages() {
-		return pages;
-	}
-
-	public long getTotal() {
-		return total;
-	}
-	
-	public boolean hasNext(){
-		return total > start + pageSize;
-	}
-	public boolean hasPrevious(){
-		return pageNo > 0;
-	}
-	
-	private void setPageSize(int count) {
-		this.pageSize = count;
-	}
-
-	public void setPageNo(int pageNo) {
-		this.pageNo = pageNo;
-		this.start = pageNo * pageSize;
-	}
-	
-	public void setTotal(int total) {
-		this.total = total;
-		this.pages = pageSize == 0 ? 1 : 
-			((total%pageSize==0) ? total/pageSize : (total/pageSize + 1));
-	}
-
-
-	public List<T> getResults() {
-		return results;
-	}
-	public Page<T> setResults(List<T> pageData) {
-		this.results = pageData;
+	public Page<T> setData(List<T> allData) {
+		this.data = allData;
 		return this;
 	}
 	

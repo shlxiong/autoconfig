@@ -2,9 +2,9 @@ package com.openxsl.config.retry.task;
 
 import java.util.List;
 
-import com.openxsl.config.dal.jdbc.QueryMap;
 import com.openxsl.config.exception.ServiceException;
 import com.openxsl.config.rpcmodel.Arguments;
+import com.openxsl.config.rpcmodel.QueryMap;
 
 public interface ITaskService {
 	

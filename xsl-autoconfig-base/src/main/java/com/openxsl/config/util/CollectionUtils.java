@@ -109,6 +109,14 @@ public class CollectionUtils {
 		return indexes;
 	}
 	
+	public <T> T lastOf(List<T> list){
+		if (list==null || list.isEmpty()){
+			return null;
+		}else{
+			return list.get(list.size()-1);
+		}
+	}
+	
 	/**
 	 * 将集合拼接为字符串
 	 */

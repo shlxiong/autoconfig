@@ -26,10 +26,10 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.util.Assert;
 
-import com.openxsl.config.dal.jdbc.QueryMap;
 import com.openxsl.config.dal.jdbc.anno.JpaResultMap;
 import com.openxsl.config.dal.jdbc.anno.JpaResultMaps;
 import com.openxsl.config.dal.jdbc.impl.FunctionalField.FunctColumn;
+import com.openxsl.config.rpcmodel.QueryMap;
 import com.openxsl.config.util.HexEncoder;
 import com.openxsl.config.util.Patterns;
 import com.openxsl.config.util.bean.GenericArray;

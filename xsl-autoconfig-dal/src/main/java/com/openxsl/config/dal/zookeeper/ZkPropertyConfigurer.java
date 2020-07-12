@@ -19,7 +19,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
-
 import com.openxsl.config.dal.zookeeper.ZooKeeperTemplate.ZkDataListener;
 import com.openxsl.config.dal.zookeeper.impl.AbstractZKTemplate;
 import com.openxsl.config.dal.zookeeper.impl.CuratorTemplate;
@@ -188,7 +187,7 @@ public class ZkPropertyConfigurer extends PropertyPlaceholderConfigurer
 	//==================== ZooKeeperTemplate.ZkDataListener ================//
 	@Override
 	public void dataChanged(String dataPath, String data) {
-		this.updateProperties((String)data);
+		this.updateProperties(data);
 		
 		try{ //update Bean-Property
 			String beanName, property, value;

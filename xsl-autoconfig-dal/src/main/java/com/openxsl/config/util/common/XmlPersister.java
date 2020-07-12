@@ -15,8 +15,8 @@ import javax.xml.bind.Marshaller;
 import org.dom4j.Element;
 import org.springframework.util.Assert;
 
-import com.openxsl.config.util.bean.GenericArray;
 import com.openxsl.config.util.ReflectUtils;
+import com.openxsl.config.util.bean.GenericArray;
 
 public class XmlPersister extends XmlUtils {
 	

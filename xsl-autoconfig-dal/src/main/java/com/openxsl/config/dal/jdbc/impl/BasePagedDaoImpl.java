@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-
 import com.openxsl.config.dal.jdbc.PagedDaoTemplate;
 import com.openxsl.config.rpcmodel.Page;
 import com.openxsl.config.util.BeanUtils;
@@ -53,7 +52,7 @@ public abstract class BasePagedDaoImpl<T> implements PagedDaoTemplate<T>,
 		sql = this.getPagedSql(sql, pageNo, pageSize);
 		logger.debug("SQL: {}", sql);
 		Page<T> page = new Page<T>(pageNo, pageSize, total);
-		page.setResults(this.queryBySql(sql, args));
+		page.setData(this.queryBySql(sql, args));
 		return page;
 	}
 	
@@ -80,7 +79,7 @@ public abstract class BasePagedDaoImpl<T> implements PagedDaoTemplate<T>,
 	public <R> List<R> queryBySql(String sql, Class<R> resultType, Object... args){
 		List<R> lstResult = new ArrayList<R>();
 		for (Map<String,Object> rowMap : this.queryMapBySql(sql, args)) {
-			R rowObj = BeanUtils.instantiate(resultType);
+			R rowObj = org.springframework.beans.BeanUtils.instantiate(resultType);
 			for (Field field : resultType.getDeclaredFields()) {
 				String key = this.getSqlParser().getColumn(field);
 				Object value = rowMap.get(key);

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.openxsl.config.autodetect.ScanConfig;
 import com.openxsl.config.rocketmq.core.RocketTemplate;
 import com.openxsl.config.thread.GrouppedThreadFactory;

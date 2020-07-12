@@ -82,7 +82,7 @@ public class ConditionalFactoryBean<T> implements FactoryBean<T>, InitializingBe
 					expr.setOperant(entry.getKey());
 					if (expr.evaluate(null)){
 						Class<?> caseType = Class.forName(entry.getValue());
-						bean = (T)this.initSpringBean(caseType);
+						bean = this.initSpringBean(caseType);
 						break;
 					}
 				}

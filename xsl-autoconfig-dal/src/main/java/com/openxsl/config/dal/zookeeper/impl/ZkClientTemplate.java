@@ -21,7 +21,6 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 import org.springframework.context.annotation.Scope;
 
 import com.alibaba.fastjson.JSON;
-
 import com.openxsl.config.autodetect.ScanConfig;
 import com.openxsl.config.condition.ConditionalProperty;
 import com.openxsl.config.dal.zookeeper.ZkNodeData;
@@ -85,6 +84,7 @@ public class ZkClientTemplate extends AbstractZKTemplate {
 	/**
 	 * 列举子节点
 	 */
+	@Override
 	public List<String> getChildren(String subPath) {
         try {
             return client.getChildren(this.normalizePath(subPath));
@@ -96,6 +96,7 @@ public class ZkClientTemplate extends AbstractZKTemplate {
 	/**
 	 * 判断是否树节点存在
 	 */
+	@Override
 	public boolean exists(String subPath) {
         try {
             return client.exists(this.normalizePath(subPath));
@@ -190,7 +191,8 @@ public class ZkClientTemplate extends AbstractZKTemplate {
 	@Override
 	protected void registerConnectState() {
 		client.subscribeStateChanges(new IZkStateListener() {
-            public void handleStateChanged(KeeperState state) throws Exception {
+            @Override
+			public void handleStateChanged(KeeperState state) throws Exception {
                 if (state == KeeperState.Disconnected) {
                 	ZkClientTemplate.this.onStateChanged(0);
                 } else if (state == KeeperState.SyncConnected) {  //recover
@@ -198,7 +200,8 @@ public class ZkClientTemplate extends AbstractZKTemplate {
                 }
             }
 
-            public void handleNewSession() throws Exception {  //KeeperState.Expired
+            @Override
+			public void handleNewSession() throws Exception {  //KeeperState.Expired
             	ZkClientTemplate.this.onStateChanged(2);
             }
 

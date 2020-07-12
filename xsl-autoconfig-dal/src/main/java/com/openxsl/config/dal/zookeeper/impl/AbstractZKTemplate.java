@@ -94,15 +94,18 @@ public abstract class AbstractZKTemplate implements ZooKeeperTemplate, Initializ
     	return digital;
 	}
 	
+	@Override
 	public ZooKeeperTemplate setRootPath(String path) {
 		this.rootPath = (path==null||path.trim().length()==0) ? "/"
 					: (path.charAt(0)=='/') ? path : '/'+path;
 		return this;
 	}
+	@Override
 	public ZooKeeperTemplate setServers(String servers) {
 		this.servers = servers;
 		return this;
 	}
+	@Override
 	public ZooKeeperTemplate setAuthority(String authority) {
 		this.authority = authority;
 		return this;

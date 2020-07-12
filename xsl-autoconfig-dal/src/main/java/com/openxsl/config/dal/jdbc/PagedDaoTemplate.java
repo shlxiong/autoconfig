@@ -1,6 +1,7 @@
 package com.openxsl.config.dal.jdbc;
 
 import com.openxsl.config.rpcmodel.Page;
+import com.openxsl.config.rpcmodel.QueryMap;
 
 /**
  * 分页查询

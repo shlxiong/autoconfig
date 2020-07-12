@@ -1,9 +1,10 @@
 package com.openxsl.config.test;
 
+import junit.framework.TestCase;
+
 import com.openxsl.config.filter.domain.Invoker;
 import com.openxsl.config.filter.tracing.TraceContext;
 import com.openxsl.config.thread.GrouppedThreadFactory;
-import junit.framework.TestCase;
 
 public class TracingTest extends TestCase{
 	

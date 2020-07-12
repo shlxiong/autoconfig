@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
-
 import com.openxsl.config.config.NotEmpty;
 
 /**
