@@ -97,7 +97,7 @@ public class Response implements Serializable {
 		}
 
 		public void setData(Object data) {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("ImmutableResponse.setData()");
 		}
 	}
 

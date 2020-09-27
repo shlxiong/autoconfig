@@ -1,4 +1,4 @@
-package com.openxsl.config.dal.echart;
+package com.openxsl.config.statis;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

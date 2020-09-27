@@ -1,7 +1,8 @@
-package com.openxsl.config.util;
+package com.openxsl.config.statis;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.openxsl.config.util.BeanUtils;
 
 /**
  * 做groupby的聚合Map
@@ -17,7 +19,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 @SuppressWarnings("serial")
 public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(StatisGroupMap.class);
 	private transient String id = "";
 	
 	public StatisGroupMap(Object bean) {
@@ -53,8 +55,70 @@ public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
 		return groupList;
 	}
 	
+	public static <T> List<T> groupBy(List<T> results, BiConsumer<T,T> mergeFunction){
+		final int TOTAL = results==null ? 0 : results.size();
+		if (TOTAL == 0) {
+			return Collections.emptyList();
+		}
+		List<T> groupList = new ArrayList<T>(TOTAL);
+		T statis, previous = results.get(0);
+		for (int i=1; i<TOTAL; i++) {
+			statis = results.get(i);
+			if (StatisGroupMap.similarWith(previous, statis)) {
+				mergeFunction.accept(previous, statis);
+			} else {
+				groupList.add(previous);
+				previous = statis;
+			}
+		}
+		if (!groupList.contains(previous)) {
+			groupList.add(previous);
+		}
+		return groupList;
+	}
+	
+	
+	/**
+	 * 更换了 groupBy属性，需要重新排序
+	 */
+	public static <T> void orderBy(List<T> results) {
+		if (results==null || results.size() < 1) {
+			return;
+		}
+		Class<?> clazz = results.get(0).getClass();
+		Collections.sort(results, new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				try {
+					String id1 = (String)BeanUtils.findDeclaredMethod(clazz, "groupId").invoke(o1);
+					String id2 = (String)BeanUtils.findDeclaredMethod(clazz, "groupId").invoke(o2);
+					return id1.compareTo(id2);
+				} catch (Exception e) {
+					return 0;
+				}
+			}
+		});
+	}
+	
 	public boolean similarWith(StatisGroupMap other) {
 		return id.equals(other.getId());
+	}
+	private static <T> boolean similarWith(T one, T other) {
+		if (one==null && other==null)   return true;
+		else if (one==null || other == null)   return false;
+		try {
+			Class<?> clazz = one.getClass();
+			Object id1 = BeanUtils.findDeclaredMethod(clazz, "groupId").invoke(one);
+			Object id2 = BeanUtils.findDeclaredMethod(clazz, "groupId").invoke(other);
+			if (id1 == null) {
+				return id2 == null;
+			} else {
+				return id2!=null && id1.equals(id2);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return false;
 	}
 	
 	/**
@@ -77,6 +141,25 @@ public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
 		}
 	}
 	/**
+	 * 求属性的较大值
+	 */
+	public void max(StatisGroupMap other, String attribute) {
+		Number v1 = (Number)this.get(attribute);
+		Number v2 = (Number)other.get(attribute);
+		if (v2 != null) {
+			if (v1 == null) {
+				this.put(attribute, v2);
+			} else {
+				if (v1 instanceof Long || v1 instanceof Integer) {
+					v1 = Math.max(v1.longValue(), v2.longValue());
+				} else {
+					v1 = Math.max(v1.longValue(), v2.longValue());
+				}
+				this.put(attribute, v1);
+			}
+		}
+	}
+	/**
 	 * 求某一个group的属性值不为null的记录数（groupBy方法中遍历）
 	 * @param attribute
 	 */
@@ -92,7 +175,7 @@ public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
 		}
 	}
 	/**
-	 * 求某一个group的总记录数（groupBy方法中遍历）
+	 * 记录数加1（groupBy方法中遍历）
 	 * @param attribute
 	 */
 	public void count2(String attribute) {

@@ -1,4 +1,4 @@
-package com.openxsl.config.dal.echart;
+package com.openxsl.config.statis;
 
 import java.util.ArrayList;
 import java.util.List;
