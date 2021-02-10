@@ -1,50 +1,69 @@
 package com.openxsl.admin.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.openxsl.admin.api.IRestrictedSource;
 import com.openxsl.config.dal.jdbc.BaseEntity;
+import com.openxsl.config.dal.jdbc.anno.InitialData;
 
 /**
  * 权限资源
  * 
  * @author shuilin.xiong
  */
-@Entity
-@Table(name = "admin_resource")
 @SuppressWarnings("serial")
+@InitialData
+@ApiModel("系统资源表")
+@Table(name = "admin_resource")
 public class Resource extends BaseEntity<Integer> implements IRestrictedSource {
 //	@Column
 //	private int id;
 	@Column
-	private String funcCode;       //编码
+	@ApiModelProperty("功能编码")
+	private String funcCode;
 	@Column
-	private String funcName;       //名称
+	@ApiModelProperty("名称")
+	private String funcName;
 	@Column
-	private String funcType;       //类型：菜单、按钮、数据列
+	@ApiModelProperty("类型：菜单、按钮、数据列")
+	private String funcType;  //'menu','button','data'
 	@Column
-	private String funcIco;        //图标（菜单）
+	@ApiModelProperty("图标（菜单）")
+	private String funcIco;
 	@Column
-	private String funcUrl;        //地址
+	@ApiModelProperty("地址")
+	private String funcUrl;
 	@Column
-	private String parentId;       //上级ID
+	@ApiModelProperty("上级ID")
+	private Integer parentId;
 	@Column
-	private int level;        	   //层级
+	@ApiModelProperty("层级")
+	private int level;
 	@Column
-	private int seqNo;             //同级序号
+	@ApiModelProperty("同级序号")
+	private int seqNo;
 	@Column
-	private String domain;         //业务系统
+	@ApiModelProperty("是否叶子节点")
+	private boolean isLeaf;
 	@Column
-	private boolean disabled;      //禁用启用
+	@ApiModelProperty("业务系统")
+	private String domain;
 	@Column
-	private String openType;       //前端打开方式（菜单）
+	@ApiModelProperty("前端打开方式（菜单）")
+	private String openType;
+	@Column
+	@ApiModelProperty("是否禁用")
+	private boolean disabled;
 	
-	private transient List<String> roles;
+	private transient Integer roleId;   //RoleResource.role_id
+	private transient List<String> roles = new ArrayList<String>(0);
 	
 	@Override
 	public String getUrl() {
@@ -57,6 +76,13 @@ public class Resource extends BaseEntity<Integer> implements IRestrictedSource {
 			authorities.addAll(roles);
 		} 
 		return authorities;
+	}
+	
+	public String getNodeId() {
+		return String.valueOf(this.getId());
+	}
+	public String getName() {
+		return this.getFuncName();
 	}
 	
 	public List<String> getRoles() {
@@ -95,10 +121,10 @@ public class Resource extends BaseEntity<Integer> implements IRestrictedSource {
 	public void setFuncUrl(String funcUrl) {
 		this.funcUrl = funcUrl;
 	}
-	public String getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
-	public void setParentId(String parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 	public int getLevel() {
@@ -113,12 +139,6 @@ public class Resource extends BaseEntity<Integer> implements IRestrictedSource {
 	public void setSeqNo(int seqNo) {
 		this.seqNo = seqNo;
 	}
-	public boolean isDisabled() {
-		return disabled;
-	}
-	public void setDisabled(boolean disabled) {
-		this.disabled = disabled;
-	}
 	public String getOpenType() {
 		return openType;
 	}
@@ -130,6 +150,25 @@ public class Resource extends BaseEntity<Integer> implements IRestrictedSource {
 	}
 	public void setDomain(String domain) {
 		this.domain = domain;
+	}
+	public boolean isLeaf() {
+		return isLeaf;
+	}
+	public void setLeaf(boolean isLeaf) {
+		this.isLeaf = isLeaf;
+	}
+	public boolean isDisabled() {
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+	public Integer getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
+		this.roles.add(String.valueOf(roleId));
 	}
 
 }

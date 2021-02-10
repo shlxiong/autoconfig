@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.ResourceDao">
+ 
+    <resultMap id="Resource" type="com.openxsl.admin.entity.Resource">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="func_code" jdbcType="VARCHAR" property="funcCode" />
+        <result column="func_name" jdbcType="VARCHAR" property="funcName" />
+        <result column="func_ico" jdbcType="VARCHAR" property="funcIco" />
+        <result column="func_type" jdbcType="VARCHAR" property="funcType" />
+        <result column="func_url" jdbcType="VARCHAR" property="funcUrl" />
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+        <result column="domain" jdbcType="VARCHAR" property="domain" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="seq_no" jdbcType="VARCHAR" property="seqNo" />
+        <result column="open_type" jdbcType="CHAR" property="openType" />
+        <result column="is_leaf" jdbcType="CHAR" property="isLeaf" />
+        <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    </resultMap>
+    
+    <select id="queryAll" resultMap="Resource">
+    	SELECT * FROM admin_resource
+    	WHERE func_type='menu'
+   		<if test="arg0!=null and arg0!=''">
+   			and domain = #{arg0}
+   		</if>
+   		<if test="arg1!=null and arg1!=''">
+   			and disabled = #{arg1}
+   		</if>
+   		<if test="arg2!=null and arg2!=''">
+   			and level = #{arg2}
+   		</if>
+   		ORDER BY level, seq_no
+    </select>
+    
+    <select id="getTopMenu" parameterType="java.lang.String" resultMap="Resource">
+ 		SELECT * FROM admin_resource
+ 		WHERE parent_id is null and disabled='0'
+ 		<if test="arg0 != null and arg0 != ''">
+ 			and domain=#{arg0}
+ 		</if>
+ 	</select>
+ 	
+ 	<select id="getResource" parameterType="java.lang.Integer" resultMap="Resource">
+ 		SELECT * FROM admin_resource
+ 		WHERE id=#{arg0}
+ 	</select>
+ 	<select id="queryByParent" parameterType="java.lang.Integer" resultMap="Resource">
+ 		SELECT * FROM admin_resource
+ 		WHERE parent_id=#{arg0} and deleted='F'
+ 		ORDER BY seq_no
+ 	</select>
+ 	<!-- <select id="queryLeafResources" resultMap="Resource">
+ 		SELECT * FROM admin_resource
+ 		WHERE is_leaf='1'
+ 		ORDER BY parent_id
+ 	</select> -->
+ 	
+ 	<select id="queryRestricted" resultMap="Resource">
+ 		SELECT r.*,rs.role_id FROM admin_resource r, admin_role_resource rs
+ 		WHERE r.id=rs.resource_id and r.disabled='0' and rs.disabled='0'
+ 		<if test="collection != null and collection.size() > 0">
+ 		    and rs.role_id in
+	 		<foreach collection="collection" item="role" open="(" close=")" separator=",">
+	            #{role}
+	        </foreach>
+ 		</if>
+ 		ORDER BY r.id
+ 	</select>
+ 	<select id="queryNonRestricted" resultMap="Resource">
+ 		SELECT r.*,rs.role_id 
+ 		FROM admin_resource r LEFT JOIN admin_role_resource rs
+ 		     on r.id=rs.resource_id
+ 		WHERE rs.role_id is null and r.disabled='0'
+ 		ORDER BY r.id
+ 	</select>
+ 	
+    <update id="setDisable" parameterType="com.openxsl.admin.entity.Resource">
+        UPDATE admin_resource SET disabled=#{disabled}
+		WHERE id=#{id}
+    </update>
+    
+    <!-- <delete id="delete" parameterType="java.util.List">
+    	DELETE FROM admin_resource
+    	WHERE id in 
+ 		<foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete> -->
+ 
+</mapper>

@@ -1,13 +1,17 @@
 package com.openxsl.admin.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import java.sql.Date;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.openxsl.config.dal.jdbc.BaseEntity;
+import com.openxsl.config.dal.jdbc.anno.Index;
 
 @Entity
 @Table(name = "admin_user_detail")
@@ -16,28 +20,51 @@ public class UserDetail extends BaseEntity<Integer> {
 //	@Column
 //	private int id;             //User.id
 	@Column
-	private String realName;    //姓名
+	@Index
+	@ApiModelProperty("用户ID")
+	private String userId;
 	@Column
+	@ApiModelProperty("姓名")
+	private String realName;    //姓名
+	@Column(length=4)
+	@ApiModelProperty("性别")
 	private String gender;      //性别
 	@Column
+	@ApiModelProperty("出生日期")
 	private Date birthday;      //出生日期
 	@Column
+	@ApiModelProperty("证件类型")
 	private String cardType;    //证件
 	@Column
+	@ApiModelProperty("证件号码")
 	private String cardNo;
-	@Column
+	@Column(length=64)
+	@ApiModelProperty("联系地址")
 	private String address;     //地址
 	@Column
+	@ApiModelProperty("手机号")
 	private String mobile;      //手机
 	@Column
+	@ApiModelProperty("联系电话")
 	private String telephone;
 	@Column
+	@ApiModelProperty("民族")
 	private String nation;      //民族
 	@Column
+	@ApiModelProperty("政治面貌")
 	private String politics;    //政治面貌
-	@Column
+	@Column(length=64)
+	@ApiModelProperty("头像")
 	private String logo;
 	
+	private String username;
+	private String email;
+	private boolean disabled;         //true:禁用, false:启用
+	private String domain;
+	private int userType;
+	private String encodeName;    //userName的加密
+	
+	@JsonIgnore
 	@SuppressWarnings("deprecation")
 	public int getAge() {
 		return Calendar.getInstance().get(Calendar.YEAR) - birthday.getYear();
@@ -108,10 +135,47 @@ public class UserDetail extends BaseEntity<Integer> {
 	public void setPolitics(String politics) {
 		this.politics = politics;
 	}
-	
-	public static void main(String[] args) {
-		String sql = new UserDetail().generDDLSql();
-		System.out.println(sql);
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public boolean isDisabled() {
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	public int getUserType() {
+		return userType;
+	}
+	public void setUserType(int userType) {
+		this.userType = userType;
+	}
+	public String getEncodeName() {
+		return encodeName;
+	}
+	public void setEncodeName(String encodeName) {
+		this.encodeName = encodeName;
 	}
 
 }

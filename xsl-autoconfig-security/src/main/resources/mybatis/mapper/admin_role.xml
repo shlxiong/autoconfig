@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.RoleDao">
+ 
+    <resultMap id="Role" type="com.openxsl.admin.entity.Role">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="disabled" jdbcType="CHAR" property="disabled" />
+        <result column="domain" jdbcType="VARCHAR" property="domain" />
+    </resultMap>
+    
+    <select id="queryForPage" parameterType="map" resultMap="Role">
+    	SELECT * FROM admin_role
+    	WHERE deleted='F'
+    	<if test="roleName!=null and roleName!=''">
+   			and role_name like concat(#{roleName},'%')
+   		</if>
+   		<if test="disabled!=null and disabled!=''">
+   			and disabled = #{disabled}
+   		</if>
+    </select>
+ 
+ 	<select id="getRole" parameterType="java.lang.Integer" resultMap="Role">
+ 		SELECT * FROM admin_role
+ 		WHERE id=#{arg0}
+ 	</select>
+ 	<select id="queryUserRoles" parameterType="java.lang.Integer" resultMap="Role">
+ 		SELECT r.* FROM admin_role r, (select role_id from admin_user_role where user_id=#{arg0} AND disabled='0')u
+ 		WHERE r.id=u.role_id AND r.disabled='0'
+ 	</select>
+ 	
+ 	<update id="setDisabled" parameterType="map">
+ 		UPDATE admin_role SET disabled=#{disabled}
+ 		WHERE id=#{roleId}
+ 	</update>
+ 	
+ 	<!-- <insert id="insert">
+        INSERT INTO admin_role(role_name, disabled, remark, domain)
+        VALUES(#{roleName}, '0', #{remark}, #{domain}) 
+    </insert>
+    
+    <update id="update" parameterType="com.openxsl.admin.entity.Role">
+        UPDATE admin_role
+        SET role_name=#{roleName}, remark=#{remark}
+		WHERE id=#{id}
+    </update> -->
+    
+    <!-- <delete id="delete" parameterType="java.util.List">
+    	DELETE FROM admin_role
+    	WHERE id in 
+ 		<foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete> -->
+ 
+</mapper>

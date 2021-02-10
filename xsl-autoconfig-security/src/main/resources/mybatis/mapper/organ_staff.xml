@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.StaffDao">
+ 
+    <resultMap id="Staff" type="com.openxsl.admin.organ.entity.Staff">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="gender" jdbcType="VARCHAR" property="gender" />
+        <result column="birthday" jdbcType="DATE" property="birthday" />
+        <result column="card_type" jdbcType="VARCHAR" property="cardType" />
+        <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+        <result column="nation" jdbcType="VARCHAR" property="nation" />
+        <result column="politics" jdbcType="VARCHAR" property="politics" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="photo" jdbcType="INTEGER" property="photo" />
+        <result column="corp_code" jdbcType="VARCHAR" property="corpCode" />
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    </resultMap>
+    
+ 	<select id="getStaff" parameterType="java.lang.Integer" resultMap="Staff">
+ 		SELECT * FROM organ_staff_info
+ 		WHERE id=#{arg0}
+ 	</select>
+ 	<select id="findByName" parameterType="java.lang.String" resultMap="Staff">
+ 		SELECT * FROM organ_staff_info
+ 		WHERE name=#{arg0} and deleted='F'
+ 	</select>
+ 	<select id="getByUserId" parameterType="java.lang.Integer" resultMap="Staff">
+ 		SELECT * FROM organ_staff_info
+ 		WHERE user_id=#{arg0} and deleted='F'
+ 	</select>
+ 	<select id="getUserType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+ 	    SELECT user_type FROM admin_user u inner join organ_staff_info stf on u.id=stf.user_id
+		WHERE stf.id=#{arg0};
+ 	</select>
+ 	
+ 	<select id="queryForPage" parameterType="map" resultMap="Staff">
+        SELECT m.* FROM organ_staff_info m
+        <if test="depts != null and depts.size() > 0">
+        	inner join organ_dept_staff d on m.id=d.staff_id
+        </if>
+        WHERE m.deleted='F'
+        <if test="name!=null and name!=''">
+            and name like concat(#{name},'%')
+        </if>
+        <if test="telephone!=null and telephone!=''">
+            and telephone like '%#{telephone}%'
+        </if>
+        <if test="depts != null and depts.size() > 0">
+        	and d.dept_id in
+        	<foreach collection="depts" item="deptId" open="(" close=")" separator=",">
+        	 	#{deptId}
+        	</foreach>
+        </if>
+        ORDER BY modify_time desc
+    </select>
+ 	
+ 	<!-- <insert id="insert">
+        INSERT INTO organ_staff_info(user_id,staff_no,name,gender,birthday,card_type,card_no,
+        	address,mobile,telephone,nation,politics,email,logo,dept_id,corp_id,position)
+        VALUES(#{userId},#{staffNo},#{name},#{gender},#{birthday},#{cardType},#{cardNo},
+        	#{address},#{mobile},#{telephone},#{nation},#{politics},#{email},#{logo},#{dept_id},#{corp_id},#{position}) 
+    </insert>
+    
+    <update id="update">
+        UPDATE organ_staff_info
+        SET name=#{name}, content=#{content}
+		WHERE id=#{id}
+    </update>
+    
+    <delete id="delete" parameterType="java.util.List">
+    	DELETE FROM organ_staff_info
+    	WHERE id in 
+ 		<foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete> -->
+ 
+</mapper>

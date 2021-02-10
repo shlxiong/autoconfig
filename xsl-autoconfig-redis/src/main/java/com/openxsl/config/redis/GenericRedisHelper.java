@@ -186,6 +186,10 @@ public class GenericRedisHelper<T extends Serializable> { //implements RedisHelp
 			template.setValueSerializer(temp);
 		}
 	}
+	
+	public Boolean updateExpires(String key, long seconds) {
+		return template.expire(key, seconds, TimeUnit.SECONDS);
+	}
 
 	/**
 	 * 模糊查询（支持？*）

@@ -17,33 +17,43 @@
     </authentication-manager> -->
     
     <sec:global-method-security pre-post-annotations="enabled"/>
+    <sec:http-firewall ref="defaultHttpFirewall"/>
     
     <sec:http pattern="/rest/**" security="none"/>
     <sec:http pattern="/swagger/**" security="none"/>
+    <sec:http pattern="/verifycode.png" security="none"/>
     <sec:http pattern="/webjars/**" security="none"/>
-    <sec:http pattern="login.html" security="none"/>
-    <sec:http pattern="register.jsp" security="none"/>
-    <sec:http pattern="/images/**" security="none"/>
-    <sec:http pattern="/css/**" security="none"/>
-    <sec:http pattern="/js/**" security="none"/>
+    <sec:http pattern="/**/favicon.ico" security="none"/>
+    <sec:http pattern="/**/**.png" security="none"/>
+    <sec:http pattern="/**/images/**" security="none"/>
+    <sec:http pattern="/**/css/**" security="none"/>
+    <sec:http pattern="/**/css/fonts/**" security="none"/>
+    <sec:http pattern="/**/fonts/**" security="none"/>
+    <sec:http pattern="/**/js/**" security="none"/>
+    <sec:http pattern="/**/*.js" security="none"/>
+    <sec:http pattern="${security.authen-login-url}" security="none"/>
     <sec:http auto-config="true" use-expressions="true" authentication-manager-ref="authenManager"
+        entry-point-ref="outputAuthEntryPoint"
     	 access-decision-manager-ref="accessDecisionManager">
-        <sec:intercept-url pattern="/user/listUser.htm" access="hasRole('ROLE_admin')"/>  	<!-- access="hasIpAddress('192.0.0.0/224')" -->
-    	<sec:intercept-url pattern="/user/resetpwd.htm" access="hasRole('ROLE_admin')"/>    <!-- access="permitAll|denyAll" -->
-    	<sec:intercept-url pattern="/user/modifyStatus.htm" access="hasRole('ROLE_admin')"/>
-    	<sec:intercept-url pattern="/user/modifyRole.htm" access="hasRole('ROLE_admin')"/>
-    	<sec:intercept-url pattern="/user/**" access="isAuthenticated()"/>
+        <sec:intercept-url pattern="/corp/**" access="hasRole('ROLE_0')"/>
+    	<sec:intercept-url pattern="/dept/**" access="hasRole('ROLE_0')"/>
+    	<sec:intercept-url pattern="/staff/**" access="hasRole('ROLE_0')"/>
+    	<sec:intercept-url pattern="/position/**" access="hasRole('ROLE_0')"/>
+    	<!-- access="hasIpAddress('192.0.0.0/224')" -->
+    	<!-- access="permitAll|denyAll" -->
+    	<!-- <sec:intercept-url pattern="/admin/resource/getUserMenu" access="isAuthenticated()"/> -->
     	<sec:access-denied-handler error-page="/errorPage" />
+    	<sec:cors configuration-source-ref="corsConfigurationSource"/>
 
-        <sec:form-login login-page="/login.html" login-processing-url="/j_security_check"
-        		default-target-url="/user/index.htm" authentication-success-handler-ref="authSuccessHandler"
-        	  	authentication-failure-handler-ref="authFailureHandler"/>
-        <sec:logout logout-url="/logout" logout-success-url="/login.html" />
+        <sec:form-login login-page="${security.authen-login-url}" login-processing-url="/j_security_check"
+        		default-target-url="/index.htm" authentication-success-handler-ref="authSuccessHandler"
+        	  	authentication-failure-handler-ref="authFailureHandler" />
+        <sec:logout logout-url="/logout" logout-success-url="${security.authen-login-url}" />
         <sec:headers disabled="true" />
         <sec:csrf disabled="true"/>
         <!-- <sec:csrf request-matcher-ref="csrfMatcher" token-repository-ref="csrfRepository"/> -->
 		<!-- <sec:remember-me remember-me-cookie="sky9c_security_remember_me" token-validity-seconds="1209600"/> -->
-		<!--custom-filter ref="randcodeFilter" before="FORM_LOGIN_FILTER"/-->
+		<sec:custom-filter before="FORM_LOGIN_FILTER" ref="randcodeFilter" /
 		
 		<!-- <sec:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
 		<sec:custom-filter position="CSRF_FILTER" ref="csrfFilter" /> -->
@@ -59,14 +69,19 @@
         <sec:authentication-provider ref="authenticationProvider" />
     </sec:authentication-manager>
 	<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider"
-    	   p:user-details-service-ref="userService" p:password-encoder-ref="passwordEncoder"
+    	   p:user-details-service-ref="authenticateService" p:password-encoder-ref="MD5Encoder"
     	   p:hide-user-not-found-exceptions="false" />
-    <bean id="authSuccessHandler"
+    <bean id="authSuccessHandler" class="com.openxsl.admin.security.LoginSuccessHandler"
+    	  p:redirect="false" p:targetUrlParameter="targetUrl" p:default-target-url="/index.htm" />
+    <!-- <bean id="authSuccessHandler"
     	  class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler"
-    	  p:default-target-url="${security.authen-success-url}" />
+    	  p:default-target-url="${security.authen-success-url}" /> -->
     <bean id="authFailureHandler" 
     	  class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"
     	  p:use-forward="true" p:default-failure-url="${security.authen-failed-url}" />
+    <bean id="clearUserHolderLogoutHandler" 
+    	  class="com.openxsl.admin.security.ClearUserHolderLogoutHandler"
+    	  p:default-target-url="${security.authen-login-url}" />
     	  
     <!-- accessDecisionManager: AffirmativeBased、ConsensusBased、UnanimousBased -->
 	<bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">  
@@ -85,12 +100,12 @@
           p:authentication-manager-ref="authenManager"
           p:security-metadata-source-ref="restrictedMetaSource" /> -->
     
-    <!-- <bean id="randcodeFilter" class="com.xhh.framework.mvc.web.auth.RandcodeFilter"/> -->
+    <bean id="randcodeFilter" class="com.openxsl.admin.security.RandcodeFilter"/>
     
     <!-- csrf -->
-    <bean id="csrfFilter" class="com.sendinfo.dataplus.admin.security.csrf.XhhCsrfFilter"
+    <bean id="csrfFilter" class="com.openxsl.admin.security.csrf.XhhCsrfFilter"
           p:enabled="${security.enable-csrf}" />
-    <bean id="csrfMatcher" class="com.sendinfo.dataplus.admin.security.csrf.CsrfSecurityRequestMatcher">
+    <bean id="csrfMatcher" class="com.openxsl.admin.security.csrf.CsrfSecurityRequestMatcher">
 		<property name="excludeUrls">
             <list>
                 <value>/rest</value>
@@ -100,13 +115,16 @@
 	</bean>
 
 	<!-- session控制
-    <bean id="sessionStrategy" class="com.sendinfo.dataplus.admin.security.session.SessionControlStrategy"
+    <bean id="sessionStrategy" class="com.openxsl.admin.security.session.SessionControlStrategy"
     	p:sessionRegistry-ref="sessionRegistry">
     	<property name="maximumSessions" value="1" />
     	<property name="exceptionIfMaximumExceeded" value="false" />
 		<property name="alwaysCreateSession" value="true" />
 		<property name="migrateSessionAttributes" value="false" />
     </bean>
-    <bean id="sessionRegistry" class="com.sendinfo.dataplus.admin.security.session.RedisSessionRegistry"/>
+    <bean id="sessionRegistry" class="com.openxsl.admin.security.session.RedisSessionRegistry"/>
 	-->
+	
+	<bean id="defaultHttpFirewall" class="org.springframework.security.web.firewall.DefaultHttpFirewall"/>
+	
 </beans>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.UserRoleDao">
+ 
+    <resultMap id="UserRole" type="com.openxsl.admin.entity.joint.UserRole">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+        <result column="expires" jdbcType="DATE" property="expires" />
+        <result column="disabled" jdbcType="CHAR" property="disabled" />
+    </resultMap>
+    
+    <select id="queryUserRoles" parameterType="java.lang.Integer" resultType="java.lang.String">
+    	SELECT role_id FROM admin_user_role
+    	WHERE user_id=#{arg0} and disabled='0' and (expires is null or expires > now())
+    </select>
+    <select id="queryRoleUsers" parameterType="java.lang.Integer" resultType="java.lang.String">
+    	SELECT user_id FROM admin_user_role
+    	WHERE role_id=#{arg0} and disabled='0' and (expires is null or expires > now())
+    </select>
+ 
+ 	<insert id="insert">
+        INSERT INTO admin_user_role(user_id, role_id, disabled)
+        VALUES(#{userId}, #{roleId}, #{disabled}) 
+    </insert>
+    
+    <!-- <update id="update" parameterType="com.openxsl.admin.entity.joint.UserRole">
+        UPDATE admin_user_role
+        SET name=#{name}, content=#{content}
+		WHERE id=#{id}
+    </update> -->
+    
+    <delete id="deleteOfUser" parameterType="java.lang.Integer">
+    	DELETE FROM admin_user_role
+    	WHERE user_id=#{arg0}
+    </delete>
+    <delete id="deleteOfRole" parameterType="java.lang.Integer">
+    	DELETE FROM admin_user_role
+    	WHERE role_id=#{arg0}
+    </delete>
+ 
+</mapper>

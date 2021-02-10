@@ -22,7 +22,7 @@ public class MavenDeployFile {
 			dependency = getDependency(file);
 			int len = dependency.length;
 			if (len > 0) {
-				String[] args2 = new String[len + 2];
+				Object[] args2 = new String[len + 2];
 				System.arraycopy(dependency, 0, args2, 0, len);
 				args2[len] = "snapshot";
 				args2[len+1] = "snapshot";

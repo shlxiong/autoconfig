@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.DistrictAreaDao">
+
+	<resultMap id="DistrictArea" type="com.openxsl.admin.organ.entity.DistrictArea">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+        <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+        <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+        <result column="short_name" jdbcType="VARCHAR" property="shortName" />
+        <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+        <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="sort_no" jdbcType="VARCHAR" property="sortNo" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+    </resultMap>
+
+	<select id="queryProvinces" resultMap="DistrictArea">
+    	SELECT * FROM dict_area
+    	WHERE level=1
+    	ORDER BY sort_no
+    </select>
+    <select id="querySubAreas" parameterType="java.lang.String" resultMap="DistrictArea">
+    	SELECT * FROM dict_area
+    	WHERE parent_code=#{arg0}
+    	ORDER BY sort_no
+    </select>
+    <select id="getByCode" parameterType="java.lang.String" resultMap="DistrictArea">
+    	SELECT * FROM dict_area
+    	WHERE area_code=#{arg0}
+    </select>
+    <select id="findByShortName" parameterType="java.util.Map" resultMap="DistrictArea">
+    	SELECT * FROM dict_area
+    	WHERE short_name=#{shortName} and level=#{level}
+    </select>
+	
+</mapper>

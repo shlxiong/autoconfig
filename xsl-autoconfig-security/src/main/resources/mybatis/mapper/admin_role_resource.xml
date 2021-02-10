@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.RoleResourceDao">
+ 
+    <resultMap id="RoleResource" type="com.openxsl.admin.entity.joint.RoleResource">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_id" jdbcType="INTEGER" property="roleId" />
+        <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
+        <result column="disabled" jdbcType="CHAR" property="disabled" />
+    </resultMap>
+    
+    <select id="queryAll" parameterType="java.lang.String" resultMap="RoleResource">
+    	SELECT * FROM admin_role_resource
+    	WHERE disabled='0' or disabled is null
+    </select>
+ 	
+ 	<insert id="insert" parameterType="com.openxsl.admin.entity.joint.RoleResource">
+        INSERT INTO admin_role_resource(role_id,resource_id,disabled)
+        VALUES(#{roleId},#{resourceId},#{disabled}) 
+    </insert>
+    
+    <delete id="delete" parameterType="com.openxsl.admin.entity.joint.RoleResource">
+    	DELETE FROM admin_role_resource
+    	WHERE role_id=#{roleId} and resource_id=#{resourceId}
+    </delete>
+    
+    <select id="listByRole" parameterType="java.lang.String" resultMap="RoleResource">
+        SELECT * from admin_role_resource 
+        WHERE role_id=#{roleId} and disabled='0'
+    </select>
+
+    <select id="deleteByRole" parameterType="java.lang.String">
+        DELETE FROM admin_role_resource WHERE role_id=#{roleId}
+    </select>
+    
+    
+ 
+</mapper>

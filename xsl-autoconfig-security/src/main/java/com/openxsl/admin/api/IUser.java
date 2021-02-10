@@ -13,6 +13,8 @@ public interface IUser extends UserDetails{
     public String getDomain();
 
     public boolean isEnabled();    //UserDetails
+    
+    public boolean isAccountNonLocked(); //UserDetails
 
     public boolean isSysAdmin();
 

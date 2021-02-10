@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.OrganGovernDao">
+    
+    <select id="getScenicCodes" resultType="java.lang.String">
+    	SELECT scenic_code FROM organ_govern_scenic
+    	WHERE govern_code=#{arg0}
+    </select>
+    <select id="getGovernCode" resultType="java.lang.String">
+    	SELECT govern_code FROM organ_govern_scenic
+    	WHERE scenic_code=#{arg0}
+    </select>
+    
+</mapper>

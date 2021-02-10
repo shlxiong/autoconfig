@@ -1,5 +1,8 @@
 package com.openxsl.admin.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -8,22 +11,29 @@ import com.openxsl.config.dal.jdbc.BaseEntity;
 
 @Entity
 @Table(name = "admin_biz_system")
+@ApiModel("业务子系统表")
 @SuppressWarnings("serial")
 public class BizSystem extends BaseEntity<Integer> {
 //	@Column
 //	private int id;
-	@Column(name="sys_code")
+	@Column(length=16)
+	@ApiModelProperty("系统编码")
 	private String sysCode;
-	@Column(name="sys_name")
+	@Column
+	@ApiModelProperty("系统名称")
 	private String sysName;
-	@Column(name="sys_url")
+	@Column(length=64)
+	@ApiModelProperty("系统首页")
 	private String sysUrl;
 	@Column
+	@ApiModelProperty("LOGO")
 	private String logo;
-	@Column(name="seq_no")
-	private int seqNo;
 	@Column
-	private boolean visible;
+	@ApiModelProperty("显示顺序")
+	private int seqNo;
+//	@Column(length=256)
+//	@ApiModelProperty("角色")
+//	private String roles;
 	
 	public String getSysCode() {
 		return sysCode;
@@ -55,14 +65,5 @@ public class BizSystem extends BaseEntity<Integer> {
 	public void setSeqNo(int seqNo) {
 		this.seqNo = seqNo;
 	}
-	public boolean isVisible() {
-		return visible;
-	}
-	public boolean isShow() {
-		return visible;
-	}
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
+	
 }

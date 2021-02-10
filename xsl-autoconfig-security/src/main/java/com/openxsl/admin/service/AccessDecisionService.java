@@ -1,6 +1,5 @@
 package com.openxsl.admin.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +16,9 @@ import org.springframework.util.AntPathMatcher;
 import com.openxsl.admin.api.IAccessDecision;
 import com.openxsl.admin.api.IRestrictedSource;
 import com.openxsl.admin.api.IUser;
-import com.openxsl.admin.dao.ResourceDao;
-import com.openxsl.admin.dao.RoleResourceDao;
+import com.openxsl.admin.dao.OperationLogDao;
 import com.openxsl.admin.entity.OperationLog;
 import com.openxsl.admin.entity.Resource;
-import com.openxsl.admin.entity.joint.RoleResource;
 
 @Service
 public class AccessDecisionService implements IAccessDecision {
@@ -29,34 +26,24 @@ public class AccessDecisionService implements IAccessDecision {
 	private final Map<String,IRestrictedSource> resourceMap = new HashMap<String,IRestrictedSource>();
 	private final AntPathMatcher matcher = new AntPathMatcher();
 	@Autowired
-	private ResourceDao resourceDao;
+	private ResourceService resourceService;
 	@Autowired
-	private RoleResourceDao roleResourceDao;
+	private OperationLogDao logDao;
 	
 	@PostConstruct
 	public void refresh() {
-		List<Resource> resources = resourceDao.queryRestricted(null);
 		synchronized (resourceMap) {
-			Map<Integer, List<String>> resourceRoles = new HashMap<Integer, List<String>>();
-			for (RoleResource roleSource : roleResourceDao.queryAll()) {
-				int roleId = roleSource.getRoleId();
-				int resourceId = roleSource.getResourceId();
-				resourceRoles.putIfAbsent(resourceId, new ArrayList<String>());
-				resourceRoles.get(resourceId).add(String.valueOf(roleId));
-			}
-			
+			List<Resource> resources = resourceService.queryRestricted(null);
 			resourceMap.clear();
 			for (Resource resource : resources) {
-				int resourceId = resource.getId();
-				resource.setRoles(resourceRoles.get(resourceId));
 				resourceMap.put(resource.getUrl(), resource);   //TODO URL不唯一？
 			}
+			resources = null;
 		}
-		resources = null;
 	}
 	
 	@Override
-	public boolean accessable(IUser user, IRestrictedSource resource) {
+	public boolean accessible(IUser user, IRestrictedSource resource) {
 		List<String> roles = resource.getAuthorities();
 		if (roles.isEmpty()) {
 			return true;
@@ -86,8 +73,7 @@ public class AccessDecisionService implements IAccessDecision {
 	
 	@Override
 	public int accessLog(OperationLog operation) {
-		// TODO Auto-generated method stub
-		return 0;
+		return logDao.insert(operation);
 	}
 
 	@Override

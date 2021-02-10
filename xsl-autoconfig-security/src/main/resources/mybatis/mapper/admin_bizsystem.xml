@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.BizSystemDao">
+ 
+    <resultMap id="BizSystem" type="com.openxsl.admin.entity.BizSystem">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="sys_code" jdbcType="VARCHAR" property="sysCode" />
+        <result column="sys_name" jdbcType="VARCHAR" property="sysName" />
+        <result column="sys_url" jdbcType="VARCHAR" property="sysUrl" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="seq_no" jdbcType="VARCHAR" property="seqNo" />
+    </resultMap>
+    
+    <select id="queryAll" resultMap="BizSystem">
+    	SELECT * FROM admin_biz_system
+    	<where>
+	    	<if test="codes != null and codes.size() > 0">
+	    		sys_code in
+	    		<foreach collection="codes" item="code" open="(" close=")" separator=",">
+	            	#{code}
+	        	</foreach>
+	    	</if>
+	    	<choose>
+	    		<when test="visible!=null and visible!=''">
+	    			and deleted=#{visible}
+	    		</when>
+	    		<otherwise>
+	    			and deleted='F'
+	    		</otherwise>
+	    	</choose>
+   		</where>
+   		ORDER BY seq_no
+    </select>
+ 
+ 	<select id="find" parameterType="java.lang.Integer" resultMap="BizSystem">
+ 		SELECT * FROM admin_biz_system
+ 		WHERE id=#{arg0}
+ 	</select>
+ 	
+ 	<!-- <insert id="insert" parameterType="com.openxsl.admin.entity.BizSystem">
+        INSERT INTO admin_biz_system(name,content,type)
+        VALUES(#{name},#{content},#{type}) 
+    </insert>
+    
+    <update id="update" parameterType="com.openxsl.admin.entity.BizSystem">
+        UPDATE admin_biz_system
+        SET name=#{name}, content=#{content}
+		WHERE id=#{id}
+    </update>
+    
+    <delete id="delete" parameterType="java.util.List">
+    	DELETE FROM admin_biz_system
+    	WHERE id in 
+ 		<foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete> -->
+ 
+</mapper>

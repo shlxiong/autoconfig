@@ -1,5 +1,8 @@
 package com.openxsl.admin.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -7,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.openxsl.config.dal.jdbc.BaseEntity;
+import com.openxsl.config.dal.jdbc.anno.Index;
 
 /**
  * 操作日志
@@ -16,27 +20,36 @@ import com.openxsl.config.dal.jdbc.BaseEntity;
 @Entity
 @Table(name = "admin_access_log")
 @SuppressWarnings("serial")
+@ApiModel("用户操作日志")
 public class OperationLog extends BaseEntity<Long> {
 //	@Column
 //	private long id;
+	@Column(length=16)
+	@Index
+	@ApiModelProperty("用户ID")
+	private String userName;
 	@Column
-	private String userId;
-	@Column
+	@ApiModelProperty("IP地址")
 	private String hostIp;
 	@Column
+	@ApiModelProperty("操作系统")
 	private String operSys;
 	@Column
+	@ApiModelProperty("浏览器")
 	private String browser;
-	@Column
+	@Column(length=64)
+	@ApiModelProperty("操作资源")
 	private String operation;     //resource
 	@Column
+	@Index
+	@ApiModelProperty("日期")
 	private Date operateDate = new Date();
 	
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getHostIp() {
 		return hostIp;
@@ -68,5 +81,8 @@ public class OperationLog extends BaseEntity<Long> {
 	public void setOperateDate(Date operateDate) {
 		this.operateDate = operateDate;
 	}
-
+	
+	public static void main(String[] args) {
+		System.out.println(new OperationLog().generDDLSql());
+	}
 }

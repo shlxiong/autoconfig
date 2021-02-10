@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.PositionRoleDao">
+ 
+    <resultMap id="Staff" type="com.openxsl.admin.organ.entity.joint.PositionRole">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="posit_id" jdbcType="VARCHAR" property="positId" />
+        <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    </resultMap>
+
+    <delete id="deleteByPostId" parameterType="java.lang.Integer" >
+ 		DELETE FROM organ_post_role
+ 		WHERE posit_id=#{arg0}
+ 	</delete>
+ 	
+ 	<select id="queryPostRoles" parameterType="java.lang.String" resultType="java.lang.String">
+ 		SELECT DISTINCT role_id
+        FROM organ_post_role
+        WHERE posit_id = #{arg0} and deleted = 'F' 
+ 	</select>
+ 	
+ 	<select id="queryPostUsers" parameterType="java.lang.String" resultType="java.lang.String">
+ 		SELECT DISTINCT user_id
+        FROM organ_post_staff ps inner join organ_staff_info stf on ps.staff_id=stf.id
+        WHERE posit_id = #{arg0} and ps.deleted = 'F' and stf.deleted='F'
+ 	</select>
+
+    <select id="queryUserRoles" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT DISTINCT pr.role_id
+        FROM organ_post_role pr INNER JOIN organ_post_staff ps ON pr.posit_id = ps.posit_id
+        	INNER JOIN organ_staff_info stf on ps.staff_id = stf.id
+        WHERE stf.user_id = #{arg0}
+        	and stf.deleted = 'F' and ps.deleted = 'F' and pr.deleted = 'F'
+ 	</select>
+ 	
+</mapper>
+

@@ -12,6 +12,8 @@ public interface IPasswordEncoder extends PasswordEncoder {
 	
 	public String getInitialPswd();
 	
+	public String decode(String encoded);
+	
 //	String encode(CharSequence rawPassword);
 //	
 //	boolean matches(CharSequence rawPassword, String encodedPassword);

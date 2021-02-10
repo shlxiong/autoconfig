@@ -18,19 +18,27 @@
     <dependencies>
         <dependency>
             <groupId>com.openxsl</groupId>
-            <artifactId>xsl-autoconfig-dal</artifactId>
+            <artifactId>xsl-autoconfig-mvc</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.openxsl</groupId>
+            <artifactId>xsl-autoconfig-redis</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         
         <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>1.5.22.RELEASE</version>
+		</dependency>
+        <dependency>
         	<groupId>org.springframework.security</groupId>
         	<artifactId>spring-security-config</artifactId>
-        	<version>${security.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.springframework.security</groupId>
         	<artifactId>spring-security-web</artifactId>
-        	<version>${security.version}</version>
         </dependency>
         
 		

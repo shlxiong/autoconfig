@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.CorporationDao">
+
+    <resultMap id="Corporation" type="com.openxsl.admin.organ.entity.Corporation">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="social_code" jdbcType="VARCHAR" property="socialCode" />
+        <result column="business" jdbcType="VARCHAR" property="business" />
+        <result column="legal_main" jdbcType="VARCHAR" property="legalMan" />
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+        <result column="fax" jdbcType="VARCHAR" property="fax" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="link_man" jdbcType="VARCHAR" property="linkMan" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="website" jdbcType="VARCHAR" property="website" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="seq_no" jdbcType="INTEGER" property="seqNo" />
+        <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    </resultMap>
+    
+    <select id="findById" resultMap="Corporation">
+    	SELECT * FROM organ_corporation
+    	WHERE id=#{arg0}
+    </select>
+    <select id="findSubCorps" resultMap="Corporation">
+    	SELECT * FROM organ_corporation
+    	WHERE parent_id=#{arg0} and deleted ='F'
+    	ORDER BY seq_no asc
+    </select>
+    <select id="queryTopCorps" resultMap="Corporation">
+    	SELECT * FROM organ_corporation
+    	WHERE parent_id is null or parent_id = -1
+    </select>
+
+</mapper>

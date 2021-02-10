@@ -13,4 +13,6 @@ public interface IAuthenticate extends UserDetailsService {
 
     public IUser getUserByName(String account);   //loadUserByUsername(String username)  
     
+    public IPasswordEncoder getPasswordEncoder();
+    
 }

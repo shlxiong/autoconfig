@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.OperationLogDao">
+ 
+    <resultMap id="OperationLog" type="com.openxsl.admin.entity.OperationLog">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="host_ip" jdbcType="VARCHAR" property="hostIp" />
+        <result column="oper_sys" jdbcType="VARCHAR" property="operSys" />
+        <result column="browser" jdbcType="VARCHAR" property="browser" />
+        <result column="operation" jdbcType="VARCHAR" property="operation" />
+        <result column="operate_date" jdbcType="VARCHAR" property="operateDate" />
+    </resultMap>
+    
+    <select id="queryForPage" parameterType="map" resultMap="OperationLog">
+    	SELECT * FROM admin_access_log
+    	WHERE operate_date between str_to_date(#{beginDate},'%Y-%m-%d') and str_to_date(#{endDate},'%Y-%m-%d')
+   		<if test="userName!=null and userName!=''">
+   			and user_name = #{userName}
+   		</if>
+   		ORDER BY operate_date desc
+    </select>
+ 	<select id="get" parameterType="java.lang.Integer" resultMap="OperationLog">
+ 		SELECT * FROM admin_access_log
+ 		WHERE id=#{arg0}
+ 	</select>
+ 	
+ 	<insert id="insert" parameterType="com.openxsl.admin.entity.OperationLog">
+        INSERT INTO admin_access_log(user_name,host_ip,oper_sys,browser,operation,operate_date)
+        VALUES(#{userName},#{hostIp},#{operSys},#{browser},#{operation},#{operateDate}) 
+    </insert>
+    
+</mapper>

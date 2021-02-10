@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.PositionDao">
+    
+    <select id="queryForPage" parameterType="map" resultType="com.openxsl.admin.organ.entity.Position">
+        SELECT * FROM organ_position
+        WHERE deleted='F'
+        <if test="name != null and name != ''">
+           and name like concat(#{name},'%')
+        </if>
+        <if test="corpCode != null and corpCode != ''">
+           and corp_code = #{corpCode}
+        </if>
+        ORDER BY modify_time desc
+    </select>
+    
+    <select id="queryByBizType" resultType="com.openxsl.admin.organ.entity.Position">
+    	SELECT * FROM organ_position
+        WHERE remark=#{bizType} and deleted='F'
+        <if test="corpCode != null and corpCode != ''">
+           and corp_code = #{corpCode}
+        </if>
+        ORDER BY modify_time desc
+    </select>
+    
+    <update id="setLeader">
+    	UPDATE organ_position set leader=#{leader}
+    	WHERE id=#{id}
+    </update>
+    
+</mapper>

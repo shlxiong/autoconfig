@@ -20,7 +20,7 @@ import com.openxsl.config.condition.ConditionalOnMissingBean;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-	@Value("${swagger.basepackage:com.sendinfo.dataplus}")
+	@Value("${swagger.basepackage:com.openxsl}")
 	private String basePkg;
 	
 	@ConditionalOnMissingBean(Docket.class)
@@ -40,7 +40,7 @@ public class SwaggerConfig {
     	 return new ApiInfoBuilder()
     			 .title("深大景区大屏与综合管控API").version("4.0")
     			 .description("API 描述")
-    			 .contact(new Contact("sendinfo", "http://haiyang.site", ""))
+    			 .contact(new Contact("openxsl", "http://haiyang.site", ""))
     			 .build();
      }
 }

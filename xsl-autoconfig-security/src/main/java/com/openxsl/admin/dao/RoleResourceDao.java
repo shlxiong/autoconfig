@@ -11,5 +11,9 @@ public interface RoleResourceDao {
 	public int delete(RoleResource roleSource);
 	
 	public List<RoleResource> queryAll();
+	
+	public List<RoleResource> listByRole(String roleId);
+
+	public int deleteByRole(String roleId);
 
 }

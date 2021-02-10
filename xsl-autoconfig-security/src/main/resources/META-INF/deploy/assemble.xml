@@ -1,0 +1,9 @@
+<module>
+   <name>权限管理</name>
+   <mandatory>true</mandatory>  <!-- 基础模块 -->
+   <group>api,manage</group>  <!-- 数据分析模块或后台管理模块 -->
+   <category>综合管控,产业监测</category>  <!-- 所属景区版或旅游局版 -->
+   <dependencies>auto</dependencies>  <!-- 所依赖的组件 -->
+   <services>auto</services>  <!-- 发布的服务 -->
+   <pageUrl></pageUrl>
+</module>

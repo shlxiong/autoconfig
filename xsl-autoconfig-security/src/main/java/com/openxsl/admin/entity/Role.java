@@ -15,8 +15,6 @@ public class Role extends BaseEntity<Integer> {
 	
 //	@Column
 //	private int id;
-	@Column(name="role_code")
-	private String roleCode;
 	@Column(name="role_name")
 	private String roleName;
 	@Column
@@ -26,12 +24,6 @@ public class Role extends BaseEntity<Integer> {
 	@Column
 	private String domain;             //@sysId 来自哪个系统
 	
-	public String getRoleCode() {
-		return roleCode;
-	}
-	public void setRoleCode(String roleCode) {
-		this.roleCode = roleCode;
-	}
 	public String getRoleName() {
 		return roleName;
 	}
@@ -56,5 +48,5 @@ public class Role extends BaseEntity<Integer> {
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
-	
+
 }

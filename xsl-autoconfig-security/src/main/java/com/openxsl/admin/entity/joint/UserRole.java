@@ -2,6 +2,7 @@ package com.openxsl.admin.entity.joint;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,9 +14,13 @@ import com.openxsl.config.dal.jdbc.BaseEntity;
 public class UserRole extends BaseEntity<Integer> {
 //	@Column
 //	private int id;
+	@Column
 	private int userId;
+	@Column
 	private int roleId;
+	@Column
 	private Date expires;
+	@Column
 	private boolean disabled;
 	
 	public UserRole() {}

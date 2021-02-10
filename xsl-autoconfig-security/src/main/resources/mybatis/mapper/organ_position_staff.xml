@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.organ.dao.PositionStaffDao">
+    <resultMap id="Staff" type="com.openxsl.admin.organ.entity.Staff">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="gender" jdbcType="VARCHAR" property="gender" />
+        <result column="birthday" jdbcType="DATE" property="birthday" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="corp_ode" jdbcType="VARCHAR" property="corpCode" />
+    </resultMap>
+
+ 	<select id="queryStaffsByPosit" parameterType="java.lang.Integer" resultMap="Staff" >
+ 		SELECT s.* from organ_staff_info s, organ_post_staff p
+		WHERE s.id=p.staff_id and p.posit_id=#{arg0} and s.deleted='F'
+ 	</select>
+
+    <delete id="deleteByStaffId" parameterType="java.lang.Integer" >
+ 		DELETE FROM organ_post_staff
+ 		WHERE posit_id=#{arg0} and deleted = 'F'
+ 	</delete>
+
+</mapper>

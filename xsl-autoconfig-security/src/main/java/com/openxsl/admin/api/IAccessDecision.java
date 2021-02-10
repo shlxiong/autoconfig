@@ -10,7 +10,7 @@ import com.openxsl.admin.entity.OperationLog;
  */
 public interface IAccessDecision extends AccessDecisionVoter<Object> {
 	
-	public boolean accessable(IUser user, IRestrictedSource resource);
+	public boolean accessible(IUser user, IRestrictedSource resource);
 	
 	public IRestrictedSource findResourceByUrl(String url);
 	

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.UserDao">
+ 
+    <resultMap id="User" type="com.openxsl.admin.entity.User">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="user_type" jdbcType="INTEGER" property="userType" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="disabled" jdbcType="CHAR" property="disabled" />
+        <result column="domain" jdbcType="VARCHAR" property="domain" />
+        <result column="pswd_date" jdbcType="VARCHAR" property="pswdDate" />
+        <result column="locked_date" jdbcType="VARCHAR" property="lockedDate" />
+    </resultMap>
+    <resultMap id="UserDetail" type="com.openxsl.admin.entity.UserDetail">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="real_name" jdbcType="INTEGER" property="realName" />
+        <result column="gender" jdbcType="VARCHAR" property="gender" />
+        <result column="birthday" jdbcType="CHAR" property="birthday" />
+        <result column="card_type" jdbcType="VARCHAR" property="cardType" />
+        <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+        <result column="nation" jdbcType="VARCHAR" property="nation" />
+        <result column="politics" jdbcType="VARCHAR" property="politics" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="disabled" jdbcType="CHAR" property="disabled" />
+        <result column="domain" jdbcType="VARCHAR" property="domain" />
+        <result column="user_type" jdbcType="INTEGER" property="userType" />
+    </resultMap>
+    
+ 	<select id="getUser" parameterType="java.lang.Integer" resultMap="User">
+ 		SELECT * FROM admin_user
+ 		WHERE id=#{arg0}
+ 	</select>
+ 	<select id="findUser" parameterType="java.lang.String" resultMap="User">
+ 		SELECT * FROM admin_user
+ 		WHERE username=#{arg0} and deleted='F'
+ 	</select>
+ 	<select id="validatePassword" resultMap="User">
+ 		SELECT * FROM admin_user
+ 		WHERE username=#{arg0} and password=#{arg1} and deleted='F'
+ 	</select>
+ 	
+ 	<select id="getUserDetail" parameterType="java.lang.Integer" resultMap="UserDetail">
+ 	    SELECT * FROM admin_user_detail
+ 		WHERE user_id=#{arg0} and deleted='F'
+ 	</select>
+ 	<select id="queryUsers" parameterType="java.util.Map" resultMap="UserDetail">
+    	SELECT u.id as user_id, u.username, u.email, u.domain, u.disabled,
+    		d.real_name, d.gender, d.mobile, d.telephone, d.birthday
+    	FROM admin_user u left join admin_user_detail d
+    		on u.id=d.user_id
+    	WHERE user_type!=2 and u.deleted='F'
+    	<if test="type!=null and type!=''">
+    	    and user_type=#{type}
+		</if>
+   		<if test="name!=null and name!=''">
+   			and username like '${name}%'
+   		</if>
+   		<if test="mobile!=null and mobile!=''">
+   			and mobile=#{mobile}
+   		</if>
+    </select>
+ 	
+ 	<insert id="insertUser" parameterType="com.openxsl.admin.entity.User">
+        INSERT INTO admin_user(username,password,user_type,email,disabled,domain,pswd_date)
+        VALUES(#{username},#{password},#{userType},#{email},#{disabled},#{domain},now()) 
+    </insert>
+    <insert id="insertUserDetail" parameterType="com.openxsl.admin.entity.UserDetail">
+        INSERT INTO admin_user_detail(user_id, real_name, gender, birthday, card_type, card_no,
+        	address, mobile, telephone, nation, politics, logo)
+        VALUES(#{userId}, #{realName}, #{gender}, #{birthday}, #{cardType}, #{cardNo},
+        	#{address}, #{mobile}, #{telephone}, #{nation}, #{politics}, #{logo}) 
+    </insert>
+    
+    <update id="updateUser" parameterType="com.openxsl.admin.entity.User">
+        UPDATE admin_user
+        SET email=#{email}, domain=#{domain}
+		WHERE id=#{id} and deleted='F'
+    </update>
+    <insert id="updateUserDetail" parameterType="com.openxsl.admin.entity.UserDetail">
+        UPDATE admin_user_detail
+        SET real_name=#{realName}, gender=#{gender}, birthday=#{birthday},
+        	card_type=#{cardType}, card_no=#{cardNo},
+        	address=#{address}, mobile=#{mobile}, telephone=#{telephone},
+        	nation=#{nation}, politics=#{politics}, logo=#{logo}
+        WHERE user_id=#{userId} and deleted='F'
+    </insert>
+    
+    <update id="modifyPassword">
+    	UPDATE admin_user SET password=#{arg2},pswd_date=now()
+    	<where>
+    		username=#{arg0} AND password=#{arg1}
+    	</where>
+    </update>
+    <update id="disableUser">
+    	UPDATE admin_user SET disabled=#{disabled}
+    	WHERE id=#{userId} and deleted='F'
+    </update>
+    <update id="lockUser">
+    	UPDATE admin_user SET locked_date=date_add(now(), interval 1 hour)
+    	WHERE username=#{arg0} and deleted='F'
+    </update>
+    
+    <delete id="deleteUser">
+    	UPDATE admin_user SET deleted='T'
+    	WHERE id = #{arg0}
+    </delete>
+    <delete id="deleteUserDetail">
+    	UPDATE admin_user_detail SET deleted='T'
+    	WHERE user_id = #{arg0}
+    </delete>
+ 
+</mapper>
