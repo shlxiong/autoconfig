@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
 import com.openxsl.config.util.StringUtils;
 
 /**
@@ -12,15 +16,17 @@ import com.openxsl.config.util.StringUtils;
  */
 @SuppressWarnings("serial")
 public class Response implements Serializable {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Response.class);
 	@NotNull
 	private String code = "0";
+	private int status = 200;   //前端检查状态
 	/** 提示信息 */
 	private String message;
 	/** 异常堆栈信息 */
 	private String exception;
 
 	/** 返回结果 */
-	private Object data;
+	private Object data = new JSONObject();
 	
 	public static final Response SUCCESS = new ImmutableResponse("操作成功");
 	public static final Response FAILURE = new ImmutableResponse("-1", "操作失败");
@@ -45,11 +51,27 @@ public class Response implements Serializable {
             result.setCode(SUCCESS.code);
             result.setData(data);
         } catch (Exception e) {
+        	LOGGER.error("", e);
             result.setCode(FAILURE.code);
             result.setMessage(FAILURE.message);
             result.setException(StringUtils.getStackTrace(e));
         }
         return result;
+    }
+	
+	public interface Excutable {
+		void execute();
+	}
+	public static Response build(Excutable cmd) {
+        try {
+            cmd.execute();
+            return SUCCESS;
+        } catch (Exception e) {
+        	LOGGER.error("", e);
+        	Response result = new Response(FAILURE.code, FAILURE.message);
+            result.setException(StringUtils.getStackTrace(e));
+            return result;
+        }
     }
 	
 	public boolean successful(){
@@ -78,11 +100,15 @@ public class Response implements Serializable {
 	public void setException(String exception) {
 		this.exception = exception;
 	}
-
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	public Object getData() {
 		return data;
 	}
-
 	public void setData(Object data) {
 		this.data = data;
 	}
@@ -97,9 +123,8 @@ public class Response implements Serializable {
 		}
 
 		public void setData(Object data) {
-			throw new UnsupportedOperationException("ImmutableResponse.setData()");
+			throw new UnsupportedOperationException();
 		}
 	}
-
 	
 }

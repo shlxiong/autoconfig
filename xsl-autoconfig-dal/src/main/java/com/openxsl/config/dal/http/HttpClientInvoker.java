@@ -1,4 +1,4 @@
-package com.openxsl.config.dal;
+package com.openxsl.config.dal.http;
 
 import java.io.IOException;
 import java.net.URLEncoder;

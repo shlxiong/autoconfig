@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.util.Assert;
+
 public class NameNumber implements NameValue {
 	private String name;
 	private long num;
@@ -14,24 +16,56 @@ public class NameNumber implements NameValue {
 	
 	private transient long total;
 	
-	public static void mergeLastPeriods(List<NameNumber> thisPeriod, List<NameNumber> lastPeriod) {
-		Map<String, NameNumber> lastMap = lastPeriod.stream().collect(
-					Collectors.toMap(NameNumber::getName, e->e));
-        for (NameNumber nameNum : thisPeriod) {
-        	nameNum.setLastNum(lastMap.remove(nameNum.getName()));
-        }
-        //有可能X轴不一致
-        for (Map.Entry<String,NameNumber> entry : lastMap.entrySet()) {
-        	NameNumber thisOne = new NameNumber(entry.getKey(), 0L);
-        	thisOne.setLastNum(entry.getValue());
-        	thisPeriod.add(thisOne);
-        }
-	}
-	
 	public NameNumber() {}
 	public NameNumber(String name, long num) {
 		this.setName(name);
 		this.setNum(num);
+	}
+	
+	public static void mergeLastPeriods(List<NameNumber> thisPeriod, List<NameNumber> lastPeriod) {
+		Map<String, NameNumber> lastMap = lastPeriod.stream().collect(
+					Collectors.toMap(NameNumber::getName, e->e));
+        for (NameNumber nameNum : thisPeriod) {
+        	nameNum.setLastValue(lastMap.remove(nameNum.getName()));
+        }
+        //有可能X轴不一致
+        for (Map.Entry<String,NameNumber> entry : lastMap.entrySet()) {
+        	NameNumber thisOne = new NameNumber(entry.getKey(), 0L);
+        	thisOne.setLastValue(entry.getValue());
+        	thisPeriod.add(thisOne);
+        }
+	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+	@Override
+	public Long getNum() {
+		return num;
+	}
+	
+	@Override
+	public void setLastValue(NameValue last) {
+		if (last != null) {
+			Assert.isTrue(last instanceof NameNumber, "类型不匹配");
+			this.setLastNum(((NameNumber)last).num);
+		}
+	}
+	public void setLastNum(long lastNum) {
+		if (lastNum != 0) {
+			this.lastNum = lastNum;
+			incrRate = this.increaseRate(num, lastNum);
+		}
+	}
+	public void setTotal(long total) {
+		if (total > 0) {
+			this.total = total;
+			ratio = NameValue.percent(new BigDecimal(num), new BigDecimal(total));
+		}
+	}
+	public long getTotal() {
+		return this.total;
 	}
 	
 	public boolean equals(Object other) {
@@ -40,39 +74,10 @@ public class NameNumber implements NameValue {
 		}
 		return name.equals(((NameNumber)other).name);
 	}
-	public void setLastNum(NameNumber that) {
-		if (that != null) {
-			this.setLastNum(that.num);
-		}
-	}
-	public void setLastNum(long lastNum) {
-		if (lastNum != 0) {
-			BigDecimal deta = new BigDecimal(100 * (num-lastNum));
-			BigDecimal last = new BigDecimal(Math.abs(lastNum));
-			incrRate = deta.divide(last, 2,  BigDecimal.ROUND_HALF_UP) + "%";
-		}
-		this.lastNum = lastNum;
-	}
-	public void setTotal(long total) {
-		if (total > 0) {
-			BigDecimal dd = new BigDecimal(100 * num);
-			ratio = dd.divide(new BigDecimal(total), 2, BigDecimal.ROUND_HALF_UP) + "%";
-			this.total = total;
-		}
-	}
-	public long getTotal() {
-		return this.total;
-	}
 	
-	public String getName() {
-		return name;
-	}
 	public NameNumber setName(String name) {
 		this.name = name;
 		return this;
-	}
-	public Long getNum() {
-		return num;
 	}
 	public void setNum(long num) {
 		this.num = num;
@@ -93,7 +98,7 @@ public class NameNumber implements NameValue {
 	
 	public static void main(String[] args) {
 		NameNumber nn = new NameNumber("", 56);
-		nn.setLastNum(new NameNumber("", 0));
+		nn.setLastValue(new NameNumber("", 0));
 		System.out.println(nn.getIncrRate().toString());
 	}
 

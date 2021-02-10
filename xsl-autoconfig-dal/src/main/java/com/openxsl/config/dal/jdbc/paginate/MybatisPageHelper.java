@@ -1,6 +1,9 @@
 package com.openxsl.config.dal.jdbc.paginate;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.ibatis.binding.MapperMethod;
@@ -18,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.openxsl.config.dal.jdbc.PagedDaoTemplate.PageLimiter;
-import com.openxsl.config.rpcmodel.Page;
+import com.openxsl.config.rpcmodel.Pagination;
 
 /**
  * <p>
@@ -58,14 +61,17 @@ public class MybatisPageHelper implements Interceptor {
 		}
 		if (boundSql.getSql().startsWith("SELECT")){
 //			RowBounds rowBounds = (RowBounds)metaObject.getValue("delegate.rowBounds");
-			Page page = this.getPageParam(boundSql);
+			String sql = boundSql.getSql();
+			Pagination page = this.getPageParam(boundSql);
 			if (page != null) {
-				String sql = boundSql.getSql();
+				page.setTotal(this.getCount(invocation, boundSql));
 				int pageNo = page.getPageNo();      //rowBounds.getOffset(), 
 				int pageSize = page.getPageSize();  //rowBounds.getLimit()
 				sql = limiter.getPagedSql(sql, pageNo, pageSize);
 				logger.info("分页语句: {}", sql);
 				metaObject.setValue("delegate.boundSql.sql", sql);
+			} else if (!"SELECT LAST_INSERT_ID()".equals(sql)) {
+				logger.info("普通语句: {}", sql);
 			}
 		}
 		return invocation.proceed();
@@ -79,21 +85,21 @@ public class MybatisPageHelper implements Interceptor {
 		}
 	}
 	
-	private Page getPageParam(BoundSql boundSql) {
+	private Pagination getPageParam(BoundSql boundSql) {
 		Object paramObject = boundSql.getParameterObject();
 		if (paramObject == null) {
 			return null;
 		}
-		if (paramObject instanceof Page) {
-			return (Page)paramObject;
+		if (paramObject instanceof Pagination) {
+			return (Pagination)paramObject;
 		} else if (paramObject instanceof ParamMap) {
 			MapperMethod.ParamMap<?> paramMap = (MapperMethod.ParamMap)paramObject;
 			if (paramMap.containsKey(PARAM_PAGE)) {
-				return (Page)paramMap.get(PARAM_PAGE);
+				return (Pagination)paramMap.get(PARAM_PAGE);
 			} else {
 				for (Object value : paramMap.values()) {
-					if (value!=null && value instanceof Page) {
-						return (Page)value;
+					if (value!=null && value instanceof Pagination) {
+						return (Pagination)value;
 					}
 				}
 			}
@@ -108,6 +114,25 @@ public class MybatisPageHelper implements Interceptor {
 			this.limiter = new OraclePageLimiter();
 		} 
 		//default as 'mysql'
+	}
+	
+	private int getCount(Invocation invocation, BoundSql boundSql) throws SQLException {
+		String countSql = "select count(1) from (" + boundSql.getSql() + ") a";
+		logger.info("总数sql 语句: {}", countSql);
+		StatementHandler target = (StatementHandler)invocation.getTarget();
+		Connection conn = (Connection)invocation.getArgs()[0];
+		int count = 0;
+		try(
+		    PreparedStatement countStmt = conn.prepareStatement(countSql);){
+		    target.parameterize(countStmt);
+		    ResultSet rs = countStmt.executeQuery();
+		    if (rs.next()) {
+		        count = rs.getInt(1);
+		        rs.close();
+		    }
+		    countStmt.close();
+		}
+		return count;
 	}
 	
 	/**

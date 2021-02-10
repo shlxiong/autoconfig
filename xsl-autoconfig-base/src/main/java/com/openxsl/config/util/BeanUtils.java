@@ -17,10 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -46,6 +50,43 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 			return (T)org.springframework.beans.BeanUtils.instantiate(clazz);
 		}else {
 			throw new InstantiationException(className+" is not compatible with target "+type);
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public static <T> T instantiate(String className, Class<T> type, ApplicationContext context) {
+		T bean = null;
+		try {
+			bean = (T)context.getBean(BeanUtils.forName(className));
+		} catch(ClassCastException | ClassNotFoundException ce) {
+			logger.error("get context-bean error: ", ce);
+		} catch (BeansException be) {
+			try {
+				bean = BeanUtils.instantiate(className, type);
+			} catch(Exception ex) {
+				logger.error("instantiate bean error: ", ex);
+			}
+		}
+		return bean;
+	}
+	public static void setAutowired(Object bean, ApplicationContext context) {
+		Class<?> beanClass = bean.getClass();
+		while (beanClass != Object.class) {
+			for (Field field : beanClass.getDeclaredFields()) {
+				String name = field.getName();
+				Class<?> beanType = field.getType();
+				if (field.isAnnotationPresent(Autowired.class)) {
+					setPrivateField(bean, name, context.getBean(beanType));
+//				} else {
+//					BeanUtils.getPropertyDescriptor(bean.getClass(), name).getWriteMethod();
+				} else if (field.isAnnotationPresent(Resource.class)) {
+					try {
+						setPrivateField(bean, name, context.getBean(name, beanType));
+					} catch (Exception e) {
+						setPrivateField(bean, name, context.getBean(beanType));
+					}
+				}
+			}
+			beanClass = beanClass.getSuperclass();
 		}
 	}
 	/**
@@ -159,6 +200,50 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
 			}
 		}
 		return child;
+	}
+	
+	public static Object getValue(Object source, String field) {
+		if (source != null) {
+			Class<?> clazz = source.getClass();
+			PropertyDescriptor desc = BeanUtils.getPropertyDescriptor(clazz, field);
+			if (desc != null) {
+				try {
+					return desc.getReadMethod().invoke(source);
+				} catch (Exception e) {
+				}
+			} else {
+				return getPrivateField(source, field);
+			}
+		}
+		return null;
+	}
+	public static boolean setValue(Object source, String field, Object value) {
+		if (source != null) {
+			Class<?> clazz = source.getClass();
+			PropertyDescriptor desc = BeanUtils.getPropertyDescriptor(clazz, field);
+			if (desc != null) {
+				try {
+					desc.getWriteMethod().invoke(source, value);
+					return true;
+				} catch (Exception e) {
+				}
+			} else {
+				setPrivateField(source, field, value);
+				return true;
+			}
+		}
+		return false;
+	}
+	public static <T> T copyBean(T source, String... fields) {
+		if (source == null) {
+			return null;
+		}
+		@SuppressWarnings("unchecked")
+		T target = (T)instantiate(source.getClass());
+		for (String field : fields) {
+			setValue(target, field, getValue(source, field));
+		}
+		return target;
 	}
 	
 	public static Class<?> getRawType(Class<?> genericClass, int index){

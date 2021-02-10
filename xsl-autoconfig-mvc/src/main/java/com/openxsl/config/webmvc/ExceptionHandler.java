@@ -18,7 +18,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.openxsl.config.util.StringUtils;
 
@@ -53,8 +52,8 @@ public class ExceptionHandler {
 			message = "缺少参数或参数类型错误";
 		}else if (HttpMediaTypeException.class.isAssignableFrom(clazz)){
 			message = "头信息不对:"+req.getContentType();
-		}else if (exception instanceof NoHandlerFoundException   //HttpStatus.NOT_FOUND
-				|| exception instanceof NoSuchRequestHandlingMethodException){
+		}else if (exception instanceof NoHandlerFoundException){   //HttpStatus.NOT_FOUND
+//				|| exception instanceof NoSuchRequestHandlingMethodException){
 			message = "请求地址错误";
 		}else if (exception instanceof HttpRequestMethodNotSupportedException){
 			message = "HTTP_METHOD不正确";

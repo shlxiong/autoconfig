@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import com.openxsl.config.util.BeanUtils;
 /**
  * 做groupby的聚合Map
  * @author shuilin.xiong
+ *
  */
 @SuppressWarnings("serial")
 public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
@@ -75,6 +77,48 @@ public class StatisGroupMap extends JSONObject {//HashMap<String, Object>{
 			groupList.add(previous);
 		}
 		return groupList;
+	}
+	
+	/**
+	 * 根据关键字做分组
+	 * @param results 源数组
+	 * @param funcGroup 产生关键字的方法
+	 * @param mergeFunction 合并相同对象的方法
+	 */
+	public static <T> List<T> groupBy(List<T> results, Function<T,Object> funcGroup,
+						BiConsumer<T,T> mergeFunction){
+		final int TOTAL = results==null ? 0 : results.size();
+		if (TOTAL == 0) {
+			return Collections.emptyList();
+		}
+		List<T> groupList = new ArrayList<T>(TOTAL);
+		T statis, previous = results.get(0);
+		for (int i=1; i<TOTAL; i++) {
+			statis = results.get(i);
+			if (funcGroup.apply(previous).equals(funcGroup.apply(statis))) {
+				mergeFunction.accept(previous, statis);
+			} else {
+				groupList.add(previous);
+				previous = statis;
+			}
+		}
+		if (!groupList.contains(previous)) {
+			groupList.add(previous);
+		}
+		return groupList;
+	}
+	
+	/**
+	 * 排序
+	 * @param results 源数组
+	 * @param funcGroup 排序方法
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> void orderBy(List<T> results, Function<T,Comparable> funcGroup) {
+		if (results==null || results.size() < 1) {
+			return;
+		}
+		Collections.sort(results, (u,v) -> funcGroup.apply(u).compareTo(funcGroup.apply(v)));
 	}
 	
 	

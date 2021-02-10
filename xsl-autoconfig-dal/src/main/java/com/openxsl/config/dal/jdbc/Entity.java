@@ -2,6 +2,7 @@ package com.openxsl.config.dal.jdbc;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ public class Entity<PK extends Serializable> implements Serializable {
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
+    @Column
     private PK id;
     private transient String deleted = FALSE;
 

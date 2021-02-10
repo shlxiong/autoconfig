@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.openxsl.config.condition.ConditionalOnMissingBean;
 import com.openxsl.config.condition.ConditionalOnPresent;
-import com.openxsl.config.dal.RestInvoker.InnerSSLContextBuilder;
+import com.openxsl.config.dal.http.RestInvoker.InnerSSLContextBuilder;
 
 /**
  * 创建HttpClient对象
