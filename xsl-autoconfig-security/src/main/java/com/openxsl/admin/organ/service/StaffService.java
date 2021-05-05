@@ -13,21 +13,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.openxsl.admin.entity.User;
+import com.openxsl.admin.entity.UserDetail;
+import com.openxsl.admin.organ.dao.DepartmentDao;
 import com.openxsl.admin.organ.dao.DeptStaffDao;
 import com.openxsl.admin.organ.dao.StaffDao;
 import com.openxsl.admin.organ.entity.Corporation;
+import com.openxsl.admin.organ.entity.Department;
 import com.openxsl.admin.organ.entity.Staff;
 import com.openxsl.admin.organ.entity.joint.DeptStaff;
 import com.openxsl.admin.service.AESPasswordEncoder;
 import com.openxsl.admin.service.AuthenticateService;
 import com.openxsl.config.dal.jdbc.BaseService;
+import com.openxsl.config.rpcmodel.Page;
+import com.openxsl.config.rpcmodel.Pagination;
+import com.openxsl.config.rpcmodel.QueryMap;
+import com.openxsl.config.util.TreeView.UTreeNode;
 
 @Service
 public class StaffService extends BaseService<StaffDao,Staff,Integer> {
 	@Autowired
+	private DepartmentDao deptDao;
+	@Autowired
 	private DeptStaffDao deptStaffDao;
 	@Autowired
 	private CorporationService corpService;
+	@Autowired
+	private DepartmentService deptService;
 	@Autowired
 	private AuthenticateService authen;
 	@Resource(name="AESEncoder")
@@ -40,6 +51,16 @@ public class StaffService extends BaseService<StaffDao,Staff,Integer> {
 		return mapper.getByUserId(userId);
 	}
 	
+	public void setDepartments(Staff staff) {
+		Integer staffId = staff.getId();
+		List<Integer> deptIds = this.getDeptIds(staffId);
+		if (deptIds != null && deptIds.size() > 0) {
+			List<String> deptNames = deptDao.findByIds(deptIds).stream()
+							.map(Department::getName).collect(Collectors.toList());
+			staff.setDeptIds(deptIds);
+			staff.setDeptNames(deptNames);
+		}
+	}
 	public List<Integer> getDeptIds(Integer staffId){
 		return deptStaffDao.selectByStaffId(staffId).stream().map(DeptStaff::getDeptId)
 					.collect(Collectors.toList());
@@ -50,7 +71,7 @@ public class StaffService extends BaseService<StaffDao,Staff,Integer> {
 		Integer userType = mapper.getUserType(staffId);
 		List<Integer> list = Arrays.asList(deptIds);
 		if (userType != null) {
-			list = this.filterDeptIds(staffId, deptIds);
+			list = this.filterDeptIds(userType, deptIds);
 			if (list.size() < 1) {
 				throw new IllegalArgumentException("机构类型不正确");
 			}
@@ -101,11 +122,54 @@ public class StaffService extends BaseService<StaffDao,Staff,Integer> {
 	
 	public List<String> getSubCorps(Staff staff) {
 		List<Integer> deptIds = this.getDeptIds(staff.getId());
-		if (deptIds == null) {
+		if (deptIds == null || deptIds.size() < 1) {
 			return Collections.emptyList();
 		} else {
 			return corpService.getSubCorpCodes(deptIds.toArray(new Integer[0]));
 		}
+	}
+	
+	/**
+	 * 分页查询整个机构的人员
+	 */
+	public Page<Staff> listCorpStaffs(String corpCode, Pagination page) {
+		Integer corpId = corpService.list(new Corporation()).stream()
+					.collect(Collectors.toMap(Corporation::getCode, Corporation::getId))
+					.get(corpCode);
+		List<String> deptIds = deptService.getDepartsOfCorp(String.valueOf(corpId))
+					.stream().map(UTreeNode::getNodeId)
+					.collect(Collectors.toList());
+		QueryMap<Object> params = new QueryMap<Object>(2);
+		params.put("depts", deptIds);
+		return this.queryForPage(params, page);
+	}
+	
+	/**
+	 * 分页查询没有机构的新用户
+	 */
+	public Page<UserDetail> listNewUsers(Pagination page){
+		return new Page<UserDetail>(page, mapper.queryNewUsers(page));
+	}
+	
+	/**
+	 * 快速生成机构的顶级部门及关联人员
+	 */
+	public void insertQuickStaff(Corporation corp, Staff staff) {
+		if (corpService.existsCorpCode(corp.getCode())) {
+			throw new IllegalArgumentException("机构编号已经存在");
+		}
+		mapper.insertQuickCorp(corp);
+		mapper.insertQuick(staff);
+		
+		Department dept = new Department();
+		dept.setName("总部顶级部门");
+		dept.setCorpId(corp.getId());
+		dept.setAreaCode(corp.getAreaCode());
+		deptDao.insertQuick(dept);
+		
+		Integer deptId = dept.getId();
+		Integer staffId = staff.getId();
+		deptStaffDao.insert(new DeptStaff(deptId, staffId));
 	}
 	
 	private List<Integer> filterDeptIds(int userType, Integer... deptIds) {

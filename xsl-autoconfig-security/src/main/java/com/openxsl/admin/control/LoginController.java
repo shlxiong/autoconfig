@@ -146,6 +146,7 @@ public class LoginController {
 		result.put("scenicCode", corpCode);
 		result.put("userLogo", LocalUserHolder.getUserLogo());
 		result.put("userName", userName);
+		result.put("deptNames", LocalUserHolder.getDeptNames());
 		
 		this.operateLogin(request, userName);
 		

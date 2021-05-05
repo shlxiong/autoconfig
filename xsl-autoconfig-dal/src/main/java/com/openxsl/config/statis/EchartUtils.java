@@ -88,7 +88,7 @@ public final class EchartUtils {
 		echart.setLegend(Arrays.asList(legends.split(",")));
 		return echart;
 	}
-
+	
 	/**
 	 * 两个序列组成一张图表，以序列1的X轴为准
 	 * @param legends   图例名称(本期,同期)
@@ -99,15 +99,15 @@ public final class EchartUtils {
 	public static final EChartVO toChartVO2(String legends,
 					List<NameNumber> values1, List<NameNumber> values2,
 					Function<String,String> labelFunc) {
-		if (labelFunc != null) {
-			for (NameNumber values : values1) {
-				values.setName(labelFunc.apply(values.getName()));
-			}
-			for (NameNumber values : values2) {
-				values.setName(labelFunc.apply(values.getName()));
-			}
-		}
-		NameNumber.mergeLastPeriods(values1, values2);
+//		if (labelFunc != null) {
+//			for (NameNumber values : values1) {
+//				values.setName(labelFunc.apply(values.getName()));
+//			}
+//			for (NameNumber values : values2) {
+//				values.setName(labelFunc.apply(values.getName()));
+//			}
+//		}
+		NameNumber.mergeLastPeriods(values1, values2, labelFunc);
 		
 		return toChartVO2(values1, legends);
 	}

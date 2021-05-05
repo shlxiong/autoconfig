@@ -14,7 +14,7 @@
     
     <select id="queryForPage" parameterType="map" resultMap="OperationLog">
     	SELECT * FROM admin_access_log
-    	WHERE operate_date between str_to_date(#{beginDate},'%Y-%m-%d') and str_to_date(#{endDate},'%Y-%m-%d')
+    	WHERE operate_date between str_to_date(#{beginDate},'%Y-%m-%d %H:%i:%s') and str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')
    		<if test="userName!=null and userName!=''">
    			and user_name = #{userName}
    		</if>

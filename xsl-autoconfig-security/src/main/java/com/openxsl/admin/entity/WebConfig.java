@@ -27,7 +27,7 @@ public class WebConfig extends BaseEntity<Integer>{
 	@Column
 	private String background;
 	@Column
-	private String webType;          //0.大屏显示配置 1.移动配置 2.管理平台配置
+	private Integer webType;          //0.大屏显示配置 1.移动配置 2.管理平台配置
 //	private String webSize;          //屏幕尺寸(0.3*3 1.3*4 2.3*5)
 //	private String webDpi;           //屏幕分辨率
 	@Column
@@ -104,10 +104,10 @@ public class WebConfig extends BaseEntity<Integer>{
 	public void setBackground(String background) {
 		this.background = background;
 	}
-	public String getWebType() {
+	public Integer getWebType() {
 		return webType;
 	}
-	public void setWebType(String webType) {
+	public void setWebType(Integer webType) {
 		this.webType = webType;
 	}
 //	public String getWebSize() {

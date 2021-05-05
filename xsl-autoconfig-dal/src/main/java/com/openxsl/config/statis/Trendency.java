@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.util.Assert;
@@ -52,6 +53,26 @@ public class Trendency extends StatisValue{
 	    return trendList;
 	}
 	
+	public static List<Trendency> mergeLastPeriods(List<StatisValue> thisPeriod,
+							List<StatisValue> lastPeriod, Function<String,String> nameFunc) {
+		Assert.notNull(nameFunc, "'nameFunc' can not be null");
+		
+		List<Trendency> trendList = new ArrayList<Trendency>(thisPeriod.size()+2);
+		Map<String, StatisValue> lastMap = lastPeriod.stream().collect(
+						Collectors.toMap(e->nameFunc.apply(e.getName()), e->e));
+		for (StatisValue values : thisPeriod) {
+			String name = nameFunc.apply(values.getName());
+			StatisValue lastOne = lastMap.remove(name);
+			trendList.add(new Trendency(values, lastOne));
+		}
+		//有可能X轴不一致
+		for (Map.Entry<String,StatisValue> entry : lastMap.entrySet()) {
+			String name = entry.getValue().getName(); //entry.getKey()
+			StatisValue thisOne = new StatisValue(name);
+			trendList.add(new Trendency(thisOne, entry.getValue()));
+		}
+		return trendList;
+	}
 	public NameNumber toNameNum(String attribute) {
 		long lastNum = "touristNum".equals(attribute) ? lastTouristNum 
 				: ("orderNum".equals(attribute)?lastOrderNum:lastTotalPrice.longValue());

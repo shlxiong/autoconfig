@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.openxsl.config.dal.jdbc.BaseEntity;
 import com.openxsl.config.dal.jdbc.anno.Index;
 
@@ -43,6 +44,7 @@ public class OperationLog extends BaseEntity<Long> {
 	@Column
 	@Index
 	@ApiModelProperty("日期")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date operateDate = new Date();
 	
 	public String getUserName() {

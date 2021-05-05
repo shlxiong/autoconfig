@@ -12,7 +12,7 @@
         <result column="home_url" jdbcType="VARCHAR" property="homeUrl" />
         <result column="login_url" jdbcType="VARCHAR" property="loginUrl" />
         <result column="background" jdbcType="VARCHAR" property="background" />
-        <result column="web_type" jdbcType="VARCHAR" property="webType" />
+        <result column="web_type" jdbcType="INTEGER" property="webType" />
         <!-- <result column="web_size" jdbcType="VARCHAR" property="webSize" />
         <result column="web_dpi" jdbcType="VARCHAR" property="webDpi" />
         <result column="project_code" jdbcType="VARCHAR" property="projectCode" /> -->

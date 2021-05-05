@@ -52,6 +52,9 @@ public class UserService extends BaseService<UserDao, User, Integer>{
 		int userId = Integer.parseInt(passwordEncoder.decode(strUserId));
 		User user = mapper.getUser(userId);
 		UserDetail detail = mapper.getUserDetail(userId);
+		if (detail == null) {
+			detail = new UserDetail();
+		}
 		detail.setUserId(strUserId);
 		detail.setUsername(user.getUsername());
 		detail.setEmail(user.getEmail());
@@ -82,8 +85,7 @@ public class UserService extends BaseService<UserDao, User, Integer>{
 			return false;
 		}
 		if (flag && detail != null) {
-			String userId = mapper.findUser(user.getUsername()).getUserId();
-			detail.setUserId(userId);
+			detail.setUserId(user.getUserId());
 			mapper.insertUserDetail(detail);
 		}
 		return flag;

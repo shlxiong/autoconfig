@@ -29,12 +29,12 @@
     </select>
     <select id="findSubCorps" resultMap="Corporation">
     	SELECT * FROM organ_corporation
-    	WHERE parent_id=#{arg0} and deleted ='F'
+    	WHERE parent_id=#{arg0} and deleted='F'
     	ORDER BY seq_no asc
     </select>
     <select id="queryTopCorps" resultMap="Corporation">
     	SELECT * FROM organ_corporation
-    	WHERE parent_id is null or parent_id = -1
+    	WHERE parent_id is null and deleted='F'
     </select>
 
 </mapper>

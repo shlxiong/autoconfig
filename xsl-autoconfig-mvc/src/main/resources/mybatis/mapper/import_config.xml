@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.config.filedata.export.dao.ImportConfigDao">
+
+    <resultMap id="importConfig" type="com.openxsl.config.filedata.export.entity.ImportConfig">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="first_caption" jdbcType="CHAR" property="firstCaption" />
+    </resultMap>
+
+	<select id="getImportConfig" parameterType="java.lang.String" resultMap="importConfig">
+		SELECT * FROM import_config
+		WHERE  deleted='F'
+		<if test="importName != null and importName != ''">
+			and name = #{importName}
+		</if>
+		<if test="scenicCode != null and scenicCode != ''">
+			and scenic_code = #{scenicCode}
+		</if>
+	</select>
+
+	<select id="getKeyValue" parameterType="map" resultType="map">
+		SELECT id as `key`, name as `value` FROM import_config
+		WHERE  deleted='F'
+		<if test="scenicCode != null and scenicCode != ''">
+			and scenic_code = #{scenicCode}
+		</if>
+		<if test="corpCodes != null">
+			and corp_code in
+			<foreach collection="corpCodes" item="item" index="index" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+ 	
+ 	<select id="queryForPage" parameterType="map" resultMap="importConfig">
+ 		SELECT * FROM import_config
+ 		<where>
+ 			<if test="name != null and name != ''">
+ 			name LIKE concat(#{name},'%')
+ 			</if>
+ 			<if test="tableName != null and tableName != ''">
+ 			table_Name=#{tableName}
+ 			</if>
+			<if test="scenicCode != null and scenicCode != ''">
+				and scenic_code = #{scenicCode}
+			</if>
+			<if test="corpCodes != null">
+				and corp_code in
+				<foreach collection="corpCodes" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			AND deleted='F'
+ 		</where>
+ 	</select>
+ 	
+ 	<!-- <insert id="insert" parameterType="com.openxsl.config.filedata.export.entity.ImportConfig">
+ 		INSERT INTO import_config(name, table_name, remark)
+ 		VALUES(#{name}, #{tableName}, #{remark})
+ 	</insert>
+ 	
+ 	<insert id="update" parameterType="com.openxsl.config.filedata.export.entity.ImportConfig">
+ 		UPDATE import_config 
+ 		SET name=#{name}, table_name=#{tableName}, remark=#{remark}
+ 		WHERE id=#{id}
+ 	</insert> -->
+ 
+</mapper>

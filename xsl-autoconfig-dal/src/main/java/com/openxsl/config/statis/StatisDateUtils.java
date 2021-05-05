@@ -133,7 +133,11 @@ public class StatisDateUtils {
 		params.put("endDate", periods.getLastEnd());
 		List<NameNumber> lastPeriod = action.apply(params);
 		
-		NameNumber.mergeLastPeriods(thisPeriod, lastPeriod);
+		if (fillType < 0 || fillType > 1) {
+			NameNumber.mergeLastPeriods(thisPeriod, lastPeriod);
+		} else {
+			NameNumber.mergeLastPeriods(thisPeriod, lastPeriod, s->s.substring(5));
+		}
 		if (fillType != -1) {
 			String strDate1 = periods.getBeginDate().toString();
 			String strDate2 = periods.getEndDate().toString();

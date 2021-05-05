@@ -3,6 +3,8 @@ package com.openxsl.config.util;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.openxsl.config.config.Alias;
 import com.openxsl.config.statis.NameValue;
@@ -70,6 +72,11 @@ public class ConstantUtils {
     	} catch (Exception e) {
     	}
     	return nameValues;
+    }
+    
+    public static Map<String,String> getMapValues(Class<?> constClazz){
+    	return getNameValues(constClazz).stream().collect(
+    				Collectors.toMap(NameValue::getName, NameValue::getValue));
     }
 
 }

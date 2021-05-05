@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.config.filedata.upload.dao.UploadDao">
+
+    <resultMap id="uploadConfig" type="com.openxsl.config.filedata.upload.model.UploadConfig">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="service_id" jdbcType="VARCHAR" property="serviceId" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="content_type" jdbcType="VARCHAR" property="contentType" />
+        <result column="allow_file_exts" jdbcType="VARCHAR" property="allowFileExts" />
+        <result column="base_path" jdbcType="VARCHAR" property="basePath" />
+        <result column="max_file_size" jdbcType="VARCHAR" property="maxFileSize" />
+        <result column="max_request_size" jdbcType="VARCHAR" property="maxRequestSize" />
+        <result column="service_class" jdbcType="VARCHAR" property="serviceClass" />
+    </resultMap>
+    <resultMap id="FileItem" type="com.openxsl.config.filedata.upload.model.FileItem">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+        <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+        <result column="file_size" jdbcType="VARCHAR" property="fileSize" />
+        <result column="service_id" jdbcType="VARCHAR" property="serviceId" />
+        <result column="data_id" jdbcType="VARCHAR" property="dataId" />
+        <result column="down_count" jdbcType="VARCHAR" property="downCount" />
+    </resultMap>
+    
+ 	<select id="getAllUploadConfigs" parameterType="java.lang.String" resultMap="uploadConfig">
+ 		SELECT * FROM upload_config
+ 		WHERE deleted='F'
+ 	</select>
+ 	
+ 	<select id="queryFileItems" resultMap="FileItem">
+ 		SELECT * FROM upload_file_info
+ 		WHERE service_id=#{serviceId} and deleted='F'
+ 		<if test="itemName!=null and itemName!=''">
+ 			and item_name=#{itemName}
+ 		</if>
+ 		<if test="dataId!=null and dataId!=''">
+ 			and data_id=#{dataId}
+ 		</if>
+ 		<if test="beginDate != null">
+			and create_time >= #{beginDate}
+		</if>
+		<if test="endDate != null">
+			and create_time
+			<![CDATA[
+				<=
+			]]>
+			#{endDate}
+		</if>
+ 	</select>
+ 	
+ 	<insert id="insertFileItem" parameterType="com.openxsl.config.filedata.upload.model.FileItem">
+ 		INSERT INTO upload_file_info(item_name, file_path, file_size, service_id, data_id, down_count)
+ 		VALUES(#{itemName}, #{filePath}, #{fileSize}, #{serviceId}, #{dataId}, #{downCount})
+ 	</insert>
+ 	
+ 	<update id="deleteFileItem">
+ 		UPDATE upload_file_info SET deleted='T'
+ 		WHERE service_id=#{serviceId} and item_name=#{itemName}
+ 		<if test="dataId!=null and dataId!=''">
+ 			and data_id=#{dataId}
+ 		</if>
+ 	</update>
+ 
+</mapper>

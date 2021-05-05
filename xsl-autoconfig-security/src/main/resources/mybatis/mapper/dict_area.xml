@@ -33,5 +33,9 @@
     	SELECT * FROM dict_area
     	WHERE short_name=#{shortName} and level=#{level}
     </select>
+    <select id="queryByLevel" resultMap="DistrictArea">
+    	SELECT * FROM dict_area
+    	WHERE `level`=#{level}
+    </select>
 	
 </mapper>

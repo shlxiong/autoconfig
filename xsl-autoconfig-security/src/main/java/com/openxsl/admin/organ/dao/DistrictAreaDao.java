@@ -16,5 +16,7 @@ public interface DistrictAreaDao extends BaseMapper<DistrictArea> {
 	DistrictArea getByCode(String code);
 	
 	DistrictArea findByShortName(@Param("shortName")String shortName, @Param("level")int level);
+	
+	List<DistrictArea> queryByLevel(@Param("level")int level);
 
 }

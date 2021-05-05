@@ -3,6 +3,7 @@ package com.openxsl.config.statis;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.util.Assert;
@@ -34,6 +35,24 @@ public class NameNumber implements NameValue {
         	thisOne.setLastValue(entry.getValue());
         	thisPeriod.add(thisOne);
         }
+	}
+	
+	public static void mergeLastPeriods(List<NameNumber> thisPeriod, List<NameNumber> lastPeriod,
+								Function<String,String> nameFunc) {
+		Assert.notNull(nameFunc, "'nameFunc' can not be null");
+		
+		Map<String, NameNumber> lastMap = lastPeriod.stream().collect(
+						Collectors.toMap(e->nameFunc.apply(e.getName()), e->e));
+		for (NameNumber nameNum : thisPeriod) {
+			String name = nameFunc.apply(nameNum.getName());
+			nameNum.setLastValue(lastMap.remove(name));
+		}
+		for (Map.Entry<String,NameNumber> entry : lastMap.entrySet()) {
+			String name = entry.getValue().getName();  //entry.getKey
+			NameNumber thisOne = new NameNumber(name, 0L);
+			thisOne.setLastValue(entry.getValue());
+			thisPeriod.add(thisOne);
+		}
 	}
 	
 	@Override

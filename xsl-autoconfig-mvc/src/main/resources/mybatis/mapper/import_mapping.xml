@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.config.filedata.export.dao.ImportMappingDao">
+ 
+    <resultMap id="importMapping" type="com.openxsl.config.filedata.export.entity.ImportMapping">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="config_name" jdbcType="VARCHAR" property="configName" />
+        <result column="column_name" jdbcType="VARCHAR" property="columnName" />
+        <result column="excel_column_no" jdbcType="VARCHAR" property="excelColumnNo" />
+        <result column="data_type" jdbcType="VARCHAR" property="dataType" />
+        <result column="max_len" jdbcType="INTEGER" property="maxLen" />
+        <result column="reference" jdbcType="VARCHAR" property="reference" />
+        <result column="format_check" jdbcType="VARCHAR" property="formatCheck" />
+    </resultMap>
+    
+    <select id="getMappings" parameterType="java.lang.String" resultMap="importMapping">
+    	SELECT * FROM IMPORT_MAPPING
+    	WHERE config_name = #{name} and deleted='F'
+        <if test="scenicCode != null and scenicCode != ''">
+            and scenic_code = #{scenicCode}
+        </if>
+        <if test="corpCodes != null">
+            and corp_code in
+            <foreach collection="corpCodes" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+ 
+ 	<!-- <insert id="insert" parameterType="com.openxsl.config.filedata.export.entity.ImportMapping">
+ 		INSERT INTO IMPORT_MAPPING (config_name,column_name,excel_column_no,data_type,max_len,reference,format_check)
+ 		VALUES (#{configName}, #{columnName}, #{excelColumnNo}, #{dataType}, #{maxLen}, #{reference}, #{formatCheck})
+ 	</insert> -->
+ 	
+ 	<update id="deleteByConfigName" parameterType="java.lang.String">
+ 		UPDATE import_mapping SET deleted='T'
+ 		WHERE config_name = #{configName}
+ 		and scenic_code = #{scenicCode}
+ 	</update>
+ 
+</mapper>

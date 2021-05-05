@@ -19,7 +19,7 @@
         <result column="email" jdbcType="VARCHAR" property="email" />
         <result column="logo" jdbcType="VARCHAR" property="logo" />
         <result column="photo" jdbcType="INTEGER" property="photo" />
-        <result column="corp_code" jdbcType="VARCHAR" property="corpCode" />
+        <!-- <result column="corp_code" jdbcType="VARCHAR" property="corpCode" /> -->
         <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     </resultMap>
     
@@ -60,12 +60,32 @@
         </if>
         ORDER BY modify_time desc
     </select>
+    
+    <select id="queryNewUsers" resultType="com.openxsl.admin.entity.UserDetail">
+    	SELECT u.id as userId, u.username, u.email, u.domain, u.disabled,
+    		d.real_name as realName, d.gender, d.mobile, d.telephone, d.birthday
+    	FROM admin_user u left join admin_user_detail d	on u.id=d.user_id
+    	WHERE user_type!=2 and u.deleted='F' and d.deleted='F'
+    		and not exists(
+	    	    select user_id from organ_staff_info s, organ_dept_staff ds
+	    	    where s.user_id=u.id and s.id=ds.staff_id
+	    	)
+    </select>
+    
+    <insert id="insertQuickCorp" parameterType="com.openxsl.admin.organ.entity.Corporation" keyProperty="id" useGeneratedKeys="true">
+    	INSERT INTO organ_corporation(code, name, area_code, type)
+        VALUES(#{code}, #{name}, #{areaCode}, #{type})
+    </insert>
+    <insert id="insertQuick" keyProperty="id" useGeneratedKeys="true">
+    	INSERT INTO organ_staff_info(user_id, name, email, area_code)
+        VALUES(#{userId}, #{name}, #{email}, #{areaCode})
+    </insert>
  	
  	<!-- <insert id="insert">
         INSERT INTO organ_staff_info(user_id,staff_no,name,gender,birthday,card_type,card_no,
-        	address,mobile,telephone,nation,politics,email,logo,dept_id,corp_id,position)
+        	address,mobile,telephone,nation,politics,email,logo,corp_code,position)
         VALUES(#{userId},#{staffNo},#{name},#{gender},#{birthday},#{cardType},#{cardNo},
-        	#{address},#{mobile},#{telephone},#{nation},#{politics},#{email},#{logo},#{dept_id},#{corp_id},#{position}) 
+        	#{address},#{mobile},#{telephone},#{nation},#{politics},#{email},#{logo},#{corpCode},#{position}) 
     </insert>
     
     <update id="update">

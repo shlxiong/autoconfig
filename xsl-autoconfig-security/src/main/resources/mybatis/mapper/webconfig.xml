@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openxsl.admin.dao.WebConfigDao">
+ 
+    <resultMap id="WebConfig" type="com.openxsl.admin.entity.WebConfig">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="support" jdbcType="VARCHAR" property="support" />
+        <result column="main_title" jdbcType="VARCHAR" property="mainTitle" />
+        <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="home_url" jdbcType="VARCHAR" property="homeUrl" />
+        <result column="login_url" jdbcType="VARCHAR" property="loginUrl" />
+        <result column="background" jdbcType="VARCHAR" property="background" />
+        <result column="web_type" jdbcType="INTEGER" property="webType" />
+        <!-- <result column="web_size" jdbcType="VARCHAR" property="webSize" />
+        <result column="web_dpi" jdbcType="VARCHAR" property="webDpi" />
+        <result column="project_code" jdbcType="VARCHAR" property="projectCode" /> -->
+        <result column="domain" jdbcType="VARCHAR" property="domain" />
+        <result column="control_url" jdbcType="VARCHAR" property="controlUrl" />
+        <result column="service_code" jdbcType="VARCHAR" property="serviceCode" />
+        <result column="park_codes" jdbcType="VARCHAR" property="parkCodes" />
+        <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+        <result column="external_corp_code" jdbcType="VARCHAR" property="externalCorpCode" />
+        <result column="esb_url" jdbcType="VARCHAR" property="esbUrl" />
+        <result column="esb_appid" jdbcType="VARCHAR" property="esbAppid" />
+        <result column="esb_appkey" jdbcType="VARCHAR" property="esbAppkey" />
+        <result column="esb_name" jdbcType="VARCHAR" property="esbName" />
+        <result column="inf_version" jdbcType="VARCHAR" property="infVersion" />
+        <result column="corp_code" jdbcType="VARCHAR" property="corpCode" />
+    </resultMap>
+    
+ 	<select id="getAll" parameterType="java.lang.String" resultMap="WebConfig">
+ 		SELECT * FROM web_config
+ 		WHERE deleted='F'
+ 		<if test="corpCode != null and corpCode != ''">
+ 			and corp_code = #{corpCode}
+ 		</if>
+ 	</select>
+ 	
+ 	<select id="get" parameterType="map" resultMap="WebConfig">
+ 		SELECT * FROM web_config
+ 		WHERE web_type=#{webType} and deleted='F'
+ 		<choose>
+ 			<when test="corpCode != null and corpCode != ''">
+ 			and corp_code = #{corpCode}
+ 			</when>
+ 			<otherwise>
+ 			and corp_code is null
+ 			</otherwise>
+ 		</choose>
+ 	</select>
+ 
+</mapper>

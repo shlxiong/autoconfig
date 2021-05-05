@@ -17,7 +17,7 @@ public class LocalUserHolder {
 	public static final String CONTEXT_REQUEST_IGNORE_AUTH = "request_ignore_auth";
 	
 	private static ThreadLocal<Map<String, Object>> context = new ThreadLocal<Map<String, Object>>();
-	private static LocalUserHolder instance = new LocalUserHolder();
+	private static final LocalUserHolder instance = new LocalUserHolder();
 	
 	LocalUserHolder() {  //private
 	}
@@ -119,6 +119,14 @@ public class LocalUserHolder {
 	public static List<String> getSubCorpCodes() {
 		try {
 			return instance.getUser_().getStaff().getSubCorpCodes();
+		} catch (NullPointerException npe) {
+			return null;
+		}
+	}
+	
+	public static List<String> getDeptNames() {
+		try {
+			return instance.getUser_().getStaff().getDeptNames();
 		} catch (NullPointerException npe) {
 			return null;
 		}

@@ -70,6 +70,9 @@ public class BaseController<S extends BaseService, T extends Entity, PK extends 
 			}
 		});
     }
+	
+	protected void checkExists(T entity) {
+	}
 
     @RequestMapping(path = "delete", method = RequestMethod.POST)
     @ResponseBody

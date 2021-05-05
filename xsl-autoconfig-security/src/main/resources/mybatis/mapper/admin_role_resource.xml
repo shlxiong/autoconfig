@@ -29,9 +29,9 @@
         WHERE role_id=#{roleId} and disabled='0'
     </select>
 
-    <select id="deleteByRole" parameterType="java.lang.String">
+    <delete id="deleteByRole" parameterType="java.lang.String">
         DELETE FROM admin_role_resource WHERE role_id=#{roleId}
-    </select>
+    </delete>
     
     
  

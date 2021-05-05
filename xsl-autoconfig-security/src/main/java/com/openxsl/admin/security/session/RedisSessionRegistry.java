@@ -86,8 +86,9 @@ public class RedisSessionRegistry implements SessionRegistry,
 			if (staffService != null){
 				Staff staff = staffService.getByUserId(userId);
 				if (staff != null) {
-					staff.setSubCorpCodes(staffService.getSubCorps(staff));
 					sessionInfo.setStaff(staff);
+					staff.setSubCorpCodes(staffService.getSubCorps(staff));
+					staffService.setDepartments(staff);
 				}
 				if (!sessionInfo.getUser().isSysAdmin() &&
 						sessionInfo.getStaff() == null) {

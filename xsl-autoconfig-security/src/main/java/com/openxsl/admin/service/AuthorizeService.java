@@ -86,7 +86,7 @@ public class AuthorizeService implements IAuthorize {
 
 	@Override
 	public void unbindResources(String roleId, String... resourceIds) {
-		if (resourceIds.length < 0) {
+		if (resourceIds.length < 1) {
 			resourceDao.deleteByRole(roleId);
 		} else {
 			int id = Integer.parseInt(roleId);
@@ -112,6 +112,13 @@ public class AuthorizeService implements IAuthorize {
 //		Set<String> roleIds = new HashSet<String>();
 //		roleIds.addAll(this.queryUserRoles(userId));
 		results.addAll(service.queryRestricted(roleIds));
+		results.sort((u,v) -> {
+			int rst = u.getLevel() - v.getLevel();
+			if (rst == 0) {
+				rst = u.getSeqNo() - v.getSeqNo();
+			}
+			return rst;
+		});
 		return results;
 	}
 

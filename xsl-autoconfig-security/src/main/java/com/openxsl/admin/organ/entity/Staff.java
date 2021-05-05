@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.openxsl.config.dal.jdbc.BaseEntity;
 
@@ -64,13 +65,15 @@ public class Staff extends BaseEntity<Integer> {
 	@ApiModelProperty("照片")
 	private String photo;       //照片
 	@Column
-	@ApiModelProperty("单位编码")
-	private String corpCode;      //单位
-	@Column
 	@ApiModelProperty("地区编码")
 	private String areaCode;      //单位
 	
+	@Transient
+	@ApiModelProperty("单位编码")
+	private String corpCode;      //单位
 	private List<String> subCorpCodes;
+	private List<Integer> deptIds;
+	private List<String> deptNames;
 	
 	public String getUserId() {
 		return userId;
@@ -180,8 +183,17 @@ public class Staff extends BaseEntity<Integer> {
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
-	public static void main(String[] args) {
-		String sql = new Staff().generDDLSql();
-		System.out.println(sql);
+	public List<String> getDeptNames() {
+		return deptNames;
 	}
+	public void setDeptNames(List<String> deptNames) {
+		this.deptNames = deptNames;
+	}
+	public List<Integer> getDeptIds() {
+		return deptIds;
+	}
+	public void setDeptIds(List<Integer> deptIds) {
+		this.deptIds = deptIds;
+	}
+	
 }

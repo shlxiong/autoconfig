@@ -2,6 +2,7 @@ package com.openxsl.admin.organ.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import com.openxsl.admin.organ.dao.DepartmentDao;
 import com.openxsl.admin.organ.entity.Department;
 import com.openxsl.admin.organ.entity.OrganTreeView;
 import com.openxsl.config.dal.jdbc.BaseService;
+import com.openxsl.config.rpcmodel.QueryMap;
 import com.openxsl.config.util.TreeView;
 import com.openxsl.config.util.TreeView.TreeNode;
 import com.openxsl.config.util.TreeView.UTreeNode;
@@ -58,7 +60,7 @@ public class DepartmentService extends BaseService<DepartmentDao, Department, In
 	 */
 	public List<Department> getDirectDeparts(String corpId){
 		Department department = new Department();
-		department.setCorpId(corpId);
+		department.setCorpId(Integer.valueOf(corpId));
 		return super.list(department);
 	}
 	
@@ -82,6 +84,12 @@ public class DepartmentService extends BaseService<DepartmentDao, Department, In
 			}
 			return children;
 		}
+	}
+	
+	public Map<String,String> listNames(String corpCode){
+		QueryMap<Object> params = new QueryMap<Object>(2);
+		params.put("corpCode", corpCode);
+		return this.getKeyValues(params);
 	}
 	
 }

@@ -8,9 +8,29 @@
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="duty" jdbcType="VARCHAR" property="duty" />
         <result column="parent_id" jdbcType="INTEGER" property="parentId" />
-        <result column="corp_code" jdbcType="VARCHAR" property="corpCode" />
+        <result column="corp_id" jdbcType="INTEGER" property="corpId" />
         <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
         <result column="director" jdbcType="VARCHAR" property="director" />
     </resultMap>
+    
+    <select id="findByIds" resultMap="Department">
+    	SELECT * FROM organ_department
+    	WHERE id in
+    	<foreach collection="list" item="item" index="i" open="(" separator="," close=")">
+    		#{item}
+    	</foreach>
+    		AND deleted='F'
+    </select>
+    
+    <select id="getKeyValue" resultType="map">
+    	SELECT dept.id as `key`, dept.name as `value`
+    	FROM organ_department dept, organ_corporation corp
+		WHERE dept.corp_id=corp.id and corp.code=#{corpCode} and dept.deleted='F'
+    </select>
+    
+    <insert id="insertQuick" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO organ_department(name, corp_id, area_code)
+    	VALUES (#{name}, #{corpId}, #{areaCode})
+    </insert>
     
 </mapper>

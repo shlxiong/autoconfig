@@ -28,10 +28,12 @@ public class DistrictAreaService extends BaseService<DistrictAreaDao, DistrictAr
 	public boolean refresh() {
 		provinceMap.clear();
 		List<DistrictArea> data = this.queryProvinces();
-		provinces.putAll(data.stream().collect(
-					Collectors.toMap(DistrictArea::getAreaCode, DistrictArea::getShortName)));
-		provinceMap.putAll(data.stream().collect( 
-					Collectors.groupingBy(DistrictArea::getShortName)) );
+		Map<String,List<DistrictArea>> cityMap = mapper.queryByLevel(2).stream()
+				.collect(Collectors.groupingBy(DistrictArea::getParentCode));
+		data.forEach(e -> {
+			provinces.put(e.getAreaCode(), e.getShortName());
+			provinceMap.put(e.getShortName(), cityMap.get(e.getAreaCode()));
+		});
 		data.clear();
 		return true;
 	}

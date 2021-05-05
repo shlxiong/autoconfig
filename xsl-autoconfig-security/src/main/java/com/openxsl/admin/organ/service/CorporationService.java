@@ -92,21 +92,23 @@ public class CorporationService extends BaseService<CorporationDao, Corporation,
 	 * @param organMap
 	 */
 	public String[] getCorporationId(Integer... deptIds) {
-		String[] corpIds = new String[deptIds.length];
+		List<String> corpIds = new ArrayList<String>(deptIds.length);
 		Map<String, String> organMap = new HashMap<String, String>();
 		for (UTreeNode node : this.queryAsTree(null)) {
 			organMap.put(node.getNodeId(), node.getParentId());
 		}
-		int i = 0;
 		for (Integer deptId : deptIds) {
 			Department department = departService.get(deptId);
 			if (department != null) {
-				String nodeId = TreeNode.getNodeId(String.valueOf(deptId), OrganTreeView.DEPT);
-				corpIds[i] = this.innerGetCorpId(nodeId, organMap);
+				if (department.getCorpId() != null) {
+					corpIds.add(String.valueOf(department.getCorpId()));
+				} else {
+					String nodeId = TreeNode.getNodeId(String.valueOf(deptId), OrganTreeView.DEPT);
+					corpIds.add(this.innerGetCorpId(nodeId, organMap));
+				}
 			}
-			i++;
 		}
-		return corpIds;
+		return corpIds.toArray(new String[0]);
 	}
 	
 	/**
@@ -130,8 +132,14 @@ public class CorporationService extends BaseService<CorporationDao, Corporation,
 		return new ArrayList<String>(corpCodeSet);
 	}
 	
+	public boolean existsCorpCode(String corpCode) {
+		Corporation example = new Corporation();
+		example.setCode(corpCode);
+		return super.selectCount(example) > 0;
+	}
+	
 	/**
-	 * @see CorporationService#getCorporationId(Integer...)
+	 * @see #getCorporationId(Integer...)
 	 */
 	private String innerGetCorpId(String nodeId, Map<String, String> organMap) {
 		String parentId = organMap.get(nodeId);

@@ -22,7 +22,7 @@ public class Department extends BaseEntity<Integer> {
 	@Column
 	private Integer parentId;
 	@Column
-	private String corpId;
+	private Integer corpId;
 	@Column
 	private String areaCode;
 	@Column
@@ -61,10 +61,10 @@ public class Department extends BaseEntity<Integer> {
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
-	public String getCorpId() {
+	public Integer getCorpId() {
 		return corpId;
 	}
-	public void setCorpId(String corpCode) {
+	public void setCorpId(Integer corpCode) {
 		this.corpId = corpCode;
 	}
 	public String getAreaCode() {
