@@ -18,7 +18,7 @@
 	    <servlet.version>3.1.0</servlet.version>
         <spring.version>4.3.10.RELEASE</spring.version>
         <spring-data-redis>1.8.6.RELEASE</spring-data-redis>
-		<spring-secur.version>4.2.4.RELEASE</spring-secur.version> <!--spring-4.3.12-->
+		<spring-secur.version>5.2.10.RELEASE</spring-secur.version> <!--spring-4.3.12-->
 		<spring-session.version>1.2.2.RELEASE</spring-session.version>
 		<spring-data.version>1.10.1.RELEASE</spring-data.version>
         <springboot.version>1.5.2.RELEASE</springboot.version>
