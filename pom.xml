@@ -25,7 +25,7 @@
 		<dubbo.version>2.5.7.2</dubbo.version>
 		<rocketmq.version>4.4.0</rocketmq.version>
 		<redis.version>2.9.0</redis.version>
-		<httpClient.version>4.5.1</httpClient.version>
+		<httpClient.version>4.5.13</httpClient.version>
 		<jackson.version>2.11.1</jackson.version>
 		<fastjson.version>1.2.56</fastjson.version>
 		<druid.version>1.1.5</druid.version>
